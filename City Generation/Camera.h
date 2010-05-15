@@ -77,7 +77,7 @@ inline void rotateHorizontal(Camera &cam, double amt)
 // - amt rotate down
 inline void rotateVertical(Camera &cam, double amt)
 {
-	cam.phi += amt;
+	cam.phi -= amt;
 }
 
 // Move the camera towards the center
@@ -100,7 +100,7 @@ inline void calculateCameraRotation(Camera &cam)
 	y = l * cos(cam.phi);
 	x = l * sin(cam.phi);
 
-	cam.center = Vec3(x, y, z) - cam.eye;
+	cam.center = Vec3(x, y, z) + cam.eye;
 }
 
 
