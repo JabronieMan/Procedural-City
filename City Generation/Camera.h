@@ -23,11 +23,11 @@ struct Camera
 
 	inline Camera()
 	{
-		eye = Vec3(0, 5, 5);
+		eye = Vec3(0, 5, 0);
 		center = Vec3(0, 0, 0);
 		up = Vec3(0, 0, 1);
 
-		theta = 0.5; phi = 0.5;
+		theta = 0.0; phi = 0.0;
 
 		halfWidth = 1.778;
 		halfHeight = 1.0;
@@ -41,7 +41,7 @@ struct Camera
 		center = c;
 		up = u;
 
-		theta = 0.5; phi = 0.5;
+		theta = 0.0; phi = 0.0;
 
 		halfWidth = 1.778;
 		halfHeight = 1.0;
@@ -55,7 +55,7 @@ struct Camera
 		center = Vec3(centerX, centerY, centerZ);
 		up = Vec3(upX, upY, upZ);
 
-		theta = 0.5; phi = 0.5;
+		theta = 0.0; phi = 0.0;
 
 		halfWidth = 1.778;
 		halfHeight = 1.0;
@@ -80,18 +80,27 @@ inline void rotateVertical(Camera &cam, double amt)
 	cam.phi += amt;
 }
 
+// Move the camera towards the center
+// Negative amount moves away
+inline void moveForward(Camera &cam, double amt)
+{
+	Vec3 direction = (cam.center - cam.eye) * amt;
+	cam.center = cam.center + direction;
+	cam.eye = cam.eye + direction;
+}
+
 // Orients the camera rotation based on the theta and phi
 inline void calculateCameraRotation(Camera &cam)
 {
 	double radius = 7;
 	double x, y, z;
-	double l = radius * cos(cam.phi);
+	double l = radius * cos(cam.theta);
 
-	z = radius * sin(cam.phi);
-	y = l * cos(cam.theta);
-	x = l * sin(cam.theta);
+	z = radius * sin(cam.theta);
+	y = l * cos(cam.phi);
+	x = l * sin(cam.phi);
 
-	cam.center = Vec3(x, y, z) + cam.eye;
+	cam.center = Vec3(x, y, z) - cam.eye;
 }
 
 

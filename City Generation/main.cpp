@@ -11,6 +11,7 @@ using namespace std;
 
 // Control Constants
 #define MOUSE_SENSITIVITY 0.005
+#define MOVEMENT_SPEED 0.1
 
 Camera cam;
 Vec2 mouse;
@@ -35,6 +36,9 @@ void display( void )
 	gluLookAt(cam);
 
 	glEnable( GL_LIGHTING );
+	glEnable( GL_NORMALIZE );
+
+	glutSolidSphere(1, 128, 128);
 	
 
 
@@ -67,6 +71,21 @@ void mouse_motion( int x, int y )
 // whenever a key on the keyboard is pressed.
 void key_press( unsigned char key, int x, int y )
 {
+	switch(key)
+	{
+		case 'w':
+		case 'W':
+			moveForward(cam, MOVEMENT_SPEED);
+			break;
+		case 's':
+		case 'S':
+			moveForward(cam, -MOVEMENT_SPEED);
+			break;
+		case 'q':
+		case 'Q':
+			exit(0);
+	
+	}
 	glutPostRedisplay();
 }
 
@@ -115,6 +134,22 @@ int main( int argc, char** argv )
 	glutKeyboardFunc( key_press );
 	glutSpecialFunc( special_key_press );
 	glutPassiveMotionFunc( mouse_passive_motion );
+
+	static float white[] = { 0.8, 0.8, 0.8, 1.0 };
+
+	glEnable( GL_DEPTH_TEST ); // Turn on depth buffering.
+
+	glEnable( GL_LIGHT0 );
+	glLightfv( GL_LIGHT0, GL_AMBIENT , white );
+	glLightfv( GL_LIGHT0, GL_DIFFUSE , white );
+	glLightfv( GL_LIGHT0, GL_SPECULAR, white );
+
+	set_light_position( GL_LIGHT0, Vec3( 2, 3, 5 ) );
+
+	glMaterial( GL_AMBIENT  , Color(0.2,0.1,0.1) );
+	glMaterial( GL_DIFFUSE  , Color(0.8,0.4,0.1) );
+	glMaterial( GL_SPECULAR , Color(1,1,1)  );
+	glMaterial( GL_SHININESS, 100 );
 
 	glutMainLoop();
 	return 0;
