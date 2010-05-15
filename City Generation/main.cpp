@@ -16,6 +16,40 @@ using namespace std;
 Camera cam;
 Vec2 mouse;
 
+void make_grid(int index)
+{
+	GLUquadric *qobj = gluNewQuadric();
+	gluQuadricNormals( qobj, GL_TRUE );
+	glNewList( index, GL_COMPILE );
+	glDisable( GL_LIGHTING );  // Use simple draw color.
+
+	glColor3f(0, 0, 0);
+	bool black = true;
+	for(int i = -10; i <=10; i++)
+	{
+		for(int j = -10; j <= 10; j++)
+		{
+			glPushMatrix();
+			glMultMatrix(Trans4x4(i, j));
+			glutSolidCube(1.0);
+			glPopMatrix();
+			if(black)
+			{
+				glColor3f( 1, 1, 1 );
+				black = false;
+			}
+			else
+			{
+				glColor3f( 0, 0, 0 );
+				black = true;
+			}
+		}
+	}
+
+	glEndList();
+	gluDeleteQuadric(qobj);
+}
+
 //Does all the drawing 
 void display( void )
 {
@@ -38,9 +72,7 @@ void display( void )
 	glEnable( GL_LIGHTING );
 	glEnable( GL_NORMALIZE );
 
-	glutSolidSphere(1, 128, 128);
-	
-
+	glCallList(1);
 
 	glFlush();
 	glutSwapBuffers();
@@ -150,6 +182,8 @@ int main( int argc, char** argv )
 	glMaterial( GL_DIFFUSE  , Color(0.8,0.4,0.1) );
 	glMaterial( GL_SPECULAR , Color(1,1,1)  );
 	glMaterial( GL_SHININESS, 100 );
+
+	make_grid(1);
 
 	glutMainLoop();
 	return 0;

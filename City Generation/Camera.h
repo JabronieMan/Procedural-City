@@ -4,6 +4,8 @@
 #include <cmath>
 #include "Vec3.h"
 
+#define PI_OVER2 1.57
+
 // A basic 3D based camera, tailored for OpenGL
 // Manages location, orientation, and viewing frustum
 
@@ -69,7 +71,16 @@ struct Camera
 // - amt rotate counterclockwise
 inline void rotateHorizontal(Camera &cam, double amt)
 {
-	cam.theta += amt;
+	double newTheta = cam.theta - amt;
+	if(newTheta > -PI_OVER2 && newTheta < PI_OVER2)
+		cam.theta = newTheta;
+	else
+	{
+		if(newTheta <= -PI_OVER2)
+			cam.theta = -PI_OVER2;
+		else
+			cam.theta = PI_OVER2;
+	}
 }
 
 // Rotate the camera vertically
@@ -77,7 +88,7 @@ inline void rotateHorizontal(Camera &cam, double amt)
 // - amt rotate down
 inline void rotateVertical(Camera &cam, double amt)
 {
-	cam.phi -= amt;
+	cam.phi += amt;
 }
 
 // Move the camera towards the center
