@@ -12,6 +12,7 @@
 #include "Vec3.h"
 #include "Mat4x4.h"
 #include "Color.h"
+#include "Camera.h"
 
 // Include the GLUT header, which will include both gl.h and glu.h.
 // You may need to modify this, depending on where this header is located
@@ -63,6 +64,11 @@ inline void gluLookAt( const Vec3 &eye, const Vec3 &cent, const Vec3 &up )
 		cent.x, cent.y, cent.z,  // The "look at" point, or "center".
 		up  .x, up  .y, up  .z   // The "up vector".
 		);
+}
+
+inline void gluLookAt(const Camera &cam)
+{
+	gluLookAt(cam.eye, cam.center, cam.up);
 }
 
 // Set the position of the specified light source.
