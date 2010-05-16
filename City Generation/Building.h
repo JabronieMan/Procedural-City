@@ -23,7 +23,16 @@ public:
 	void decreaseHeight();
 
 	inline Building(BuildingType t, int width, int depth, Mat4x4 position, GLint ident);
+	inline Building();
 };
+
+void Building::draw() const
+{
+	glPushMatrix();
+	glMultMatrix(trans);
+	glCallList(id);
+	glPopMatrix();
+}
 
 void Building::generateStandard()
 {
@@ -31,6 +40,34 @@ void Building::generateStandard()
 	gluQuadricNormals( qobj, GL_TRUE );
 	glNewList( id, GL_COMPILE );
 	glEnable( GL_NORMALIZE );
+	
+	int w = (width / 2) + ((rand() % (width / 2)) + 1) / 2;
+	int d = (depth / 2) + ((rand() % (depth / 2)) + 1) / 2;
+
+	glBegin(GL_QUAD_STRIP);
+	glVertex3f(w, -d, 0);
+	glVertex3f(-w, -d, 0);
+	glVertex3f(w, -d, levels);
+	glVertex3f(-w, -d, levels);
+	glVertex3f(w, d, levels);
+	glVertex3f(-w, d, levels);
+	glVertex3f(w, d, 0);
+	glVertex3f(-w, d, 0);
+	glEnd();
+
+	glBegin(GL_POLYGON);
+	glVertex3f(w, -d, 0);
+	glVertex3f(w, -d, levels);
+	glVertex3f(w, d, levels);
+	glVertex3f(w, d, 0);
+	glEnd();
+
+	glBegin(GL_POLYGON);
+	glVertex3f(-w, d, 0);
+	glVertex3f(-w, d, levels);
+	glVertex3f(-w, -d, levels);
+	glVertex3f(-w, -d, 0);
+	glEnd();
 
 	glEndList();
 	gluDeleteQuadric( qobj );
@@ -41,6 +78,7 @@ void Building::generate()
 	switch(type)
 	{
 	case STANDARD:
+		levels = rand() % 40 + 6;
 		generateStandard();
 		break;
 	}
@@ -54,6 +92,12 @@ inline Building::Building(BuildingType t, int w, int d, Mat4x4 position, GLint i
 	trans = position;
 	id = ident;
 
+	generate();
+}
+
+inline Building::Building()
+{
+	type = NONE;
 }
 
 #endif

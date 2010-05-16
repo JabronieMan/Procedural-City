@@ -17,6 +17,8 @@ using namespace std;
 Camera cam;
 Vec2 mouse;
 
+Building build;
+
 void make_grid(int index)
 {
 	GLUquadric *qobj = gluNewQuadric();
@@ -73,7 +75,9 @@ void display( void )
 	glEnable( GL_LIGHTING );
 	glEnable( GL_NORMALIZE );
 
-	glCallList(1);
+	//glCallList(1);
+
+	build.draw();
 
 	glFlush();
 	glutSwapBuffers();
@@ -187,7 +191,9 @@ int main( int argc, char** argv )
 	glMaterial( GL_SPECULAR , Color(1,1,1)  );
 	glMaterial( GL_SHININESS, 100 );
 
-	make_grid(1);
+	build = Building(STANDARD, 8, 8, Mat4x4::Identity(), 10);
+
+	//make_grid(1);
 
 	glutMainLoop();
 	return 0;

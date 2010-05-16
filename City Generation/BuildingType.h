@@ -7,7 +7,8 @@ enum BuildingType
 	STATE,
 	MODERN,
 	SPIRE,
-	FIB
+	FIB,
+	NONE
 };
 
 #endif
