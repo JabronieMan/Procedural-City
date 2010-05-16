@@ -5,6 +5,8 @@
 
 // Include standard system header files.
 #include <iostream>
+#include <time.h>
+#include <stdlib.h>
 #include <cmath>
 
 // Include all the other useful headers.

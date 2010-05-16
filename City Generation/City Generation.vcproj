@@ -181,7 +181,19 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath=".\Building.h"
+				>
+			</File>
+			<File
+				RelativePath=".\BuildingType.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Camera.h"
+				>
+			</File>
+			<File
+				RelativePath=".\City.h"
 				>
 			</File>
 			<File

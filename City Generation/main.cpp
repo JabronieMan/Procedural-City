@@ -2,6 +2,7 @@
 */
 
 #include "MyUtil.h"
+#include "City.h"
 
 using namespace std;
 
@@ -153,6 +154,9 @@ void mouse_passive_motion( int x, int y )
 
 int main( int argc, char** argv )
 {
+	// Seed the random number generator, this only should happen once
+	srand (time(NULL));
+
 	glutInit( &argc, argv );
 	glutInitDisplayMode( GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH );
 	glutInitWindowSize( DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT );
