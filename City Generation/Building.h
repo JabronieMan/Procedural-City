@@ -4,11 +4,13 @@
 #define _BUILDING_H_
 
 #include "BuildingType.h"
+#include "Texture.h"
 #include "MyUtil.h"
 
 class Building
 {
 private:
+	Texture myText;
 	Mat4x4 trans;
 	GLint id;
 	int levels;
@@ -39,15 +41,21 @@ void Building::generateStandard()
 	GLUquadric *qobj = gluNewQuadric();
 	gluQuadricNormals( qobj, GL_TRUE );
 	glNewList( id, GL_COMPILE );
-	glEnable( GL_NORMALIZE );
+	glEnable(GL_TEXTURE_2D);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+	glBindTexture(GL_TEXTURE_2D, myText.texId);
 	
 	int w = (width / 2) + ((rand() % (width / 2)) + 1) / 2;
 	int d = (depth / 2) + ((rand() % (depth / 2)) + 1) / 2;
 
 	glBegin(GL_QUAD_STRIP);
+	glTexCoord2f(0.0, 0.0);
 	glVertex3f(w, -d, 0);
+	glTexCoord2f(0.0, 1.0);
 	glVertex3f(-w, -d, 0);
+	glTexCoord2f(1.0, 1.0);
 	glVertex3f(w, -d, levels);
+	glTexCoord2f(1.0, 0.0);
 	glVertex3f(-w, -d, levels);
 	glVertex3f(w, d, levels);
 	glVertex3f(-w, d, levels);
@@ -86,6 +94,7 @@ void Building::generate()
 
 inline Building::Building(BuildingType t, int w, int d, Mat4x4 position, GLint ident)
 {
+	myText = Texture();
 	type = t;
 	width = w;
 	depth = d;
@@ -97,6 +106,7 @@ inline Building::Building(BuildingType t, int w, int d, Mat4x4 position, GLint i
 
 inline Building::Building()
 {
+	myText = Texture();
 	type = NONE;
 }
 

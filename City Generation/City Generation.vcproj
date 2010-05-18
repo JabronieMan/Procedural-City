@@ -209,6 +209,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Texture.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Vec2.h"
 				>
 			</File>

@@ -187,7 +187,7 @@ int main( int argc, char** argv )
 	set_light_position( GL_LIGHT0, Vec3( 2, 3, 5 ) );
 
 	glMaterial( GL_AMBIENT  , Color(0.2,0.1,0.1) );
-	glMaterial( GL_DIFFUSE  , Color(0.8,0.4,0.1) );
+	glMaterial( GL_DIFFUSE  , Color(0.1,0.1,0.1) );
 	glMaterial( GL_SPECULAR , Color(1,1,1)  );
 	glMaterial( GL_SHININESS, 100 );
 
