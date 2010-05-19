@@ -65,21 +65,21 @@ Texture::Texture()
 	{
 		for(int col = 0; col < TEXTURE_DIM; col++)
 		{
-			if(row % WINDOW_HEIGHT == 0 || row % WINDOW_HEIGHT == 1)
+			if(row % WINDOW_HEIGHT <= 1)
 			{
 				setBlack(row, col);
 			}
-			else if(row % WINDOW_HEIGHT == 62 || row % WINDOW_HEIGHT == 63)
+			else if(row % WINDOW_HEIGHT >= 62)
 			{
 				setBlack(row, col);
 			}
 			else
 			{
-				if(col % WINDOW_WIDTH == 0 || col % WINDOW_WIDTH == 1)
+				if(col % WINDOW_WIDTH <= 1)
 				{
 					setBlack(row, col);
 				}
-				else if(col % WINDOW_WIDTH == 30 || col % WINDOW_WIDTH == 31)
+				else if(col % WINDOW_WIDTH >= 28)
 				{
 					setBlack(row, col);
 				}

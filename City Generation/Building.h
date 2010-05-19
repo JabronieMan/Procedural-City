@@ -48,6 +48,7 @@ void Building::generateStandard()
 	int w = (width / 2) + ((rand() % (width / 2)) + 1) / 2;
 	int d = (depth / 2) + ((rand() % (depth / 2)) + 1) / 2;
 
+	/*
 	glBegin(GL_QUAD_STRIP);
 	glTexCoord2f(0.0, 0.0);
 	glVertex3f(w, -d, 0);
@@ -62,18 +63,58 @@ void Building::generateStandard()
 	glVertex3f(w, d, 0);
 	glVertex3f(-w, d, 0);
 	glEnd();
+	*/
+
 
 	glBegin(GL_POLYGON);
+	glTexCoord2f(0.0, 0.0);
 	glVertex3f(w, -d, 0);
+	glTexCoord2f(0.0, 1.0);
+	glVertex3f(-w, -d, 0);
+	glTexCoord2f(1.0, 1.0);
+	glVertex3f(-w, -d, levels);
+	glTexCoord2f(1.0, 0.0);
 	glVertex3f(w, -d, levels);
+	glEnd();
+
+	glBegin(GL_POLYGON);
+	glVertex3f(w, -d, levels);
+	glVertex3f(-w, -d, levels);
+	glVertex3f(-w, d, levels);
 	glVertex3f(w, d, levels);
+	glEnd();
+
+	glBegin(GL_POLYGON);
+	glTexCoord2f(1.0, 0.0);
+	glVertex3f(w, d, levels);
+	glTexCoord2f(1.0, 1.0);
+	glVertex3f(-w, d, levels);
+	glTexCoord2f(0.0, 1.0);
+	glVertex3f(-w, d, 0);
+	glTexCoord2f(0.0, 0.0);
+	glVertex3f(w, d, 0);
+	glEnd();
+
+
+	glBegin(GL_POLYGON);
+	glTexCoord2f(0.0, 0.0);
+	glVertex3f(w, -d, 0);
+	glTexCoord2f(0.0, 1.0);
+	glVertex3f(w, -d, levels);
+	glTexCoord2f(1.0, 1.0);
+	glVertex3f(w, d, levels);
+	glTexCoord2f(1.0, 0.0);
 	glVertex3f(w, d, 0);
 	glEnd();
 
 	glBegin(GL_POLYGON);
+	glTexCoord2f(0.0, 0.0);
 	glVertex3f(-w, d, 0);
+	glTexCoord2f(0.0, 1.0);
 	glVertex3f(-w, d, levels);
+	glTexCoord2f(1.0, 1.0);
 	glVertex3f(-w, -d, levels);
+	glTexCoord2f(1.0, 0.0);
 	glVertex3f(-w, -d, 0);
 	glEnd();
 
