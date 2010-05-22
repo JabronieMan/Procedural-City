@@ -194,16 +194,8 @@ int main( int argc, char** argv )
 
 	glEnable( GL_DEPTH_TEST ); // Turn on depth buffering.
 
-	glEnable( GL_LIGHT0 );
-	glLightfv( GL_LIGHT0, GL_AMBIENT , white );
-	glLightfv( GL_LIGHT0, GL_DIFFUSE , white );
-	glLightfv( GL_LIGHT0, GL_SPECULAR, white );
-
-	set_light_position( GL_LIGHT0, Vec3( 2, 3, 5 ) );
-
-	glMaterial( GL_AMBIENT  , Color(0.2,0.1,0.1) );
-	glMaterial( GL_DIFFUSE  , Color(0.1,0.1,0.1) );
-	glMaterial( GL_SPECULAR , Color(1,1,1)  );
+	glMaterial( GL_AMBIENT  , Color(0.9,0.1,0.1) );
+	glMaterial( GL_DIFFUSE  , Color(0.9,0.1,0.1) );
 	glMaterial( GL_SHININESS, 100 );
 
 	createStreets(STREETS);

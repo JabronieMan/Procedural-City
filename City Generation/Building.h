@@ -48,6 +48,8 @@ void Building::generateStandard()
 	int w = (width / 2) - ((rand() % (width / 2)) + 1) / 2;
 	int d = (depth / 2) - ((rand() % (depth / 2)) + 1) / 2;
 
+	glColor(Color(0, 0, 0));
+
 	glBegin(GL_POLYGON);
 	glTexCoord2f(1.0, 0.0);
 	glVertex3f(w, -d, 0);
@@ -99,6 +101,18 @@ void Building::generateStandard()
 	glVertex3f(-w, d, levels);
 	glVertex3f(w, d, levels);
 	glEnd();
+
+	// Base/Sidewalk
+	glColor3f(0.8, 0.8, 0.8);
+	w = width + 0.2;
+	d = depth + 0.2;
+	glBegin(GL_POLYGON);
+	glVertex3f(w, d, 0.0001);
+	glVertex3f(w, -d, 0.0001);
+	glVertex3f(-w, -d, 0.0001);
+	glVertex3f(-w, d, 0.0001);
+	glEnd();
+
 
 	glEndList();
 	gluDeleteQuadric( qobj );
