@@ -25,7 +25,7 @@ struct Camera
 
 	inline Camera()
 	{
-		eye = Vec3(0, 5, 0);
+		eye = Vec3(100, 100, 50);
 		center = Vec3(0, 0, 0);
 		up = Vec3(0, 0, 1);
 

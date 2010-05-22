@@ -53,7 +53,12 @@ void createStreets(int index)
 	glNewList( index, GL_COMPILE );
 	glDisable( GL_LIGHTING );  // Use simple draw color.
 
-	
+	glBegin(GL_POLYGON);
+	glVertex3f(-BUILD_WIDTH / 2, -BUILD_DEPTH / 2, -0.001);
+	glVertex3f(CITY_WIDTH + BUILD_WIDTH / 2, -BUILD_DEPTH / 2, -0.001);
+	glVertex3f(CITY_WIDTH + BUILD_WIDTH / 2, CITY_DEPTH + BUILD_DEPTH / 2, -0.001);
+	glVertex3f(-BUILD_WIDTH / 2, CITY_DEPTH + BUILD_DEPTH / 2, -0.001);
+	glEnd();
 
 	glEndList();
 	gluDeleteQuadric(qobj);
