@@ -6,8 +6,8 @@
 #include <stdio.h>
 
 #define TEXTURE_DIM 512
-#define WINDOW_HEIGHT 64
-#define WINDOW_WIDTH 32
+#define WINDOW_HEIGHT 8
+#define WINDOW_WIDTH 8
 
 static GLubyte image[TEXTURE_DIM][TEXTURE_DIM][4];
 
@@ -69,7 +69,7 @@ Texture::Texture()
 			{
 				setBlack(row, col);
 			}
-			else if(row % WINDOW_HEIGHT >= 62)
+			else if(row % WINDOW_HEIGHT >= 6)
 			{
 				setBlack(row, col);
 			}
@@ -79,7 +79,7 @@ Texture::Texture()
 				{
 					setBlack(row, col);
 				}
-				else if(col % WINDOW_WIDTH >= 28)
+				else if(col % WINDOW_WIDTH >= 6)
 				{
 					setBlack(row, col);
 				}

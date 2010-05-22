@@ -1,12 +1,14 @@
 #ifndef _CITY_H_
 #define _CITY_H_
 
-#include "Building.h"
+#define CITY_WIDTH 256
+#define CITY_DEPTH 256
+#define BUILD_WIDTH 8
+#define BUILD_DEPTH 8
+#define STREET_WIDTH 2
 
-// This class will server to be the data structure that maintains the city.
-// It should do it in an organized way so the buildings can be drawn somewhat efficiently.
-class City
-{
-};
+#include "Building.h"
+#include <vector>
+
 
 #endif

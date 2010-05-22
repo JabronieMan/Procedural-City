@@ -45,8 +45,8 @@ void Building::generateStandard()
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 	glBindTexture(GL_TEXTURE_2D, myText.texId);
 	
-	int w = (width / 2) + ((rand() % (width / 2)) + 1) / 2;
-	int d = (depth / 2) + ((rand() % (depth / 2)) + 1) / 2;
+	int w = (width / 2) - ((rand() % (width / 2)) + 1) / 2;
+	int d = (depth / 2) - ((rand() % (depth / 2)) + 1) / 2;
 
 	/*
 	glBegin(GL_QUAD_STRIP);

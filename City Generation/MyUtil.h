@@ -110,6 +110,7 @@ enum special_key {
 	F10_key         = 10,
 	F11_key         = 11,
 	F12_key         = 12,
+	left_shift		= 27,
 	left_arrow_key  = 100,
 	up_arrow_key    = 101,
 	right_arrow_key = 102,

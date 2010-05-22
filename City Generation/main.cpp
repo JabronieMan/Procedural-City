@@ -7,47 +7,53 @@
 using namespace std;
 
 // Window Params
-#define DEFAULT_WINDOW_WIDTH 1280
-#define DEFAULT_WINDOW_HEIGHT 720
+#define DEFAULT_WINDOW_WIDTH 1600
+#define DEFAULT_WINDOW_HEIGHT 900
 
 // Control Constants
 #define MOUSE_SENSITIVITY 0.005
 #define MOVEMENT_SPEED 0.1
 
+#define STREETS 1
+
 Camera cam;
 Vec2 mouse;
 
-Building build;
+//Building build;
+//Building build2;
+vector<Building> city = vector<Building>();
 
-void make_grid(int index)
+void buildCity()
+{
+	GLint bID = 1010;
+	for(int i = BUILD_WIDTH / 2; i < CITY_WIDTH; i += (BUILD_WIDTH + STREET_WIDTH))
+	{
+		for(int j = BUILD_DEPTH / 2; j < CITY_DEPTH; j += (BUILD_DEPTH + STREET_WIDTH))
+		{
+			city.push_back(Building(STANDARD, BUILD_WIDTH, BUILD_DEPTH, Trans4x4(i, j), bID));
+			bID++;
+		}
+	}
+}
+
+void drawCity()
+{
+	for(size_t i = 0; i < city.size(); i++)
+	{
+		city[i].draw();
+	}
+	glCallList(STREETS);
+}
+
+
+void createStreets(int index)
 {
 	GLUquadric *qobj = gluNewQuadric();
 	gluQuadricNormals( qobj, GL_TRUE );
 	glNewList( index, GL_COMPILE );
 	glDisable( GL_LIGHTING );  // Use simple draw color.
 
-	glColor3f(0, 0, 0);
-	bool black = true;
-	for(int i = -10; i <=10; i++)
-	{
-		for(int j = -10; j <= 10; j++)
-		{
-			glPushMatrix();
-			glMultMatrix(Trans4x4(i, j));
-			glutSolidCube(1.0);
-			glPopMatrix();
-			if(black)
-			{
-				glColor3f( 1, 1, 1 );
-				black = false;
-			}
-			else
-			{
-				glColor3f( 0, 0, 0 );
-				black = true;
-			}
-		}
-	}
+	
 
 	glEndList();
 	gluDeleteQuadric(qobj);
@@ -75,9 +81,7 @@ void display( void )
 	glEnable( GL_LIGHTING );
 	glEnable( GL_NORMALIZE );
 
-	//glCallList(1);
-
-	build.draw();
+	drawCity();
 
 	glFlush();
 	glutSwapBuffers();
@@ -108,21 +112,27 @@ void mouse_motion( int x, int y )
 // whenever a key on the keyboard is pressed.
 void key_press( unsigned char key, int x, int y )
 {
+	double speed = MOVEMENT_SPEED;
+	if(glutGetModifiers() == GLUT_ACTIVE_SHIFT)
+	{
+		speed *= 5;
+	}
 	switch(key)
 	{
 		case 'w':
 		case 'W':
-			moveForward(cam, MOVEMENT_SPEED);
+			moveForward(cam, speed);
 			break;
 		case 's':
 		case 'S':
-			moveForward(cam, -MOVEMENT_SPEED);
+			moveForward(cam, -speed);
 			break;
 		case 'q':
 		case 'Q':
 			exit(0);
 	
 	}
+
 	glutPostRedisplay();
 }
 
@@ -132,21 +142,21 @@ void key_press( unsigned char key, int x, int y )
 // Currently not used, but may be used for "Bonus" questions.
 void special_key_press( int key, int x, int y ) 
 {
-	 switch( key )
-	 {
-		 case up_arrow_key:
-		 break;
+	switch( key )
+	{
+	case up_arrow_key:
+		break;
 
-		 case down_arrow_key: 
-		 break;
+	case down_arrow_key: 
+		break;
 
-		 case left_arrow_key:
-		 break;
+	case left_arrow_key:
+		break;
 
-		 case right_arrow_key:
-		 break;
-	 }
-	 glutPostRedisplay();
+	case right_arrow_key:
+		break;
+	}
+	glutPostRedisplay();
 }
 
 //Just keep track of where the mouse was last
@@ -166,7 +176,7 @@ int main( int argc, char** argv )
 	glutInitWindowSize( DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT );
 	glutInitWindowPosition( 100, 100 );
 	glutCreateWindow( "Welcome to Polyville" );
-	glClearColor( 0.20, 0.30, 0.50, 0.0 ); // clear window.
+	glClearColor( 0.10, 0.10, 0.10, 0.0 ); // clear window.
 
 	glutDisplayFunc( display );
 	glutMouseFunc( mouse_button );
@@ -191,9 +201,8 @@ int main( int argc, char** argv )
 	glMaterial( GL_SPECULAR , Color(1,1,1)  );
 	glMaterial( GL_SHININESS, 100 );
 
-	build = Building(STANDARD, 8, 8, Mat4x4::Identity(), 10);
-
-	//make_grid(1);
+	createStreets(STREETS);
+	buildCity();
 
 	glutMainLoop();
 	return 0;
