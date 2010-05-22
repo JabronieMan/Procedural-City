@@ -67,33 +67,35 @@ void Building::generateStandard()
 
 
 	glBegin(GL_POLYGON);
-	glTexCoord2f(0.0, 0.0);
+	glTexCoord2f(1.0, 0.0);
 	glVertex3f(w, -d, 0);
-	glTexCoord2f(0.0, 1.0);
+	glTexCoord2f(0.0, 0.0);
 	glVertex3f(-w, -d, 0);
-	glTexCoord2f(1.0, 1.0);
-	glVertex3f(-w, -d, levels);
-	glTexCoord2f(1.0, 0.0);
-	glVertex3f(w, -d, levels);
-	glEnd();
-
-	glBegin(GL_POLYGON);
-	glVertex3f(w, -d, levels);
-	glVertex3f(-w, -d, levels);
-	glVertex3f(-w, d, levels);
-	glVertex3f(w, d, levels);
-	glEnd();
-
-	glBegin(GL_POLYGON);
-	glTexCoord2f(1.0, 0.0);
-	glVertex3f(w, d, levels);
-	glTexCoord2f(1.0, 1.0);
-	glVertex3f(-w, d, levels);
 	glTexCoord2f(0.0, 1.0);
-	glVertex3f(-w, d, 0);
+	glVertex3f(-w, -d, levels);
+	glTexCoord2f(1.0, 1.0);
+	glVertex3f(w, -d, levels);
+	glEnd();
+	
+
+	glBegin(GL_POLYGON);
+	glVertex3f(w, -d, levels);
+	glVertex3f(-w, -d, levels);
+	glVertex3f(-w, d, levels);
+	glVertex3f(w, d, levels);
+	glEnd();
+
+	glBegin(GL_POLYGON);
+	glTexCoord2f(1.0, 1.0);
+	glVertex3f(w, d, levels);
+	glTexCoord2f(0.0, 1.0);
+	glVertex3f(-w, d, levels);
 	glTexCoord2f(0.0, 0.0);
+	glVertex3f(-w, d, 0);
+	glTexCoord2f(1.0, 0.0);
 	glVertex3f(w, d, 0);
 	glEnd();
+	
 
 
 	glBegin(GL_POLYGON);
@@ -106,6 +108,7 @@ void Building::generateStandard()
 	glTexCoord2f(1.0, 0.0);
 	glVertex3f(w, d, 0);
 	glEnd();
+	
 
 	glBegin(GL_POLYGON);
 	glTexCoord2f(0.0, 0.0);
