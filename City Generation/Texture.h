@@ -10,6 +10,7 @@
 #define TEXTURE_HEIGHT 256
 #define WINDOW_HEIGHT 8
 #define WINDOW_WIDTH 8
+#define WINDOW_BEZEL 2
 
 static GLubyte image[TEXTURE_HEIGHT][TEXTURE_WIDTH][4];
 
@@ -22,23 +23,49 @@ public:
 private:
 	void setWhite(int row, int col);
 	void setBlack(int row, int col);
+	void setGrayscale(int row, int col, GLubyte color);
+	void colorWindow(int xOffset, int yOffset);
 	void createGLTexture();
+	GLubyte randomColor();
 };
+
+void Texture::setGrayscale(int row, int col, GLubyte color)
+{
+	image[row][col][0] = color;
+	image[row][col][1] = color;
+	image[row][col][2] = color;
+	image[row][col][3] = (GLubyte) 255;
+}
 
 void Texture::setBlack(int row, int col)
 {
-	image[row][col][0] = (GLubyte) 0;
-	image[row][col][1] = (GLubyte) 0;
-	image[row][col][2] = (GLubyte) 0;
-	image[row][col][3] = (GLubyte) 255;
+	setGrayscale(row, col, (GLubyte) 0);
 }
 
 void Texture::setWhite(int row, int col)
 {
-	image[row][col][0] = (GLubyte) 245;
-	image[row][col][1] = (GLubyte) 245;
-	image[row][col][2] = (GLubyte) 245;
-	image[row][col][3] = (GLubyte) 255;
+	setGrayscale(row, col, (GLubyte) 255);
+}
+
+GLubyte Texture::randomColor()
+{
+	int num = rand() % 100;
+	if(num < 50)
+	{
+		return (GLubyte) 10;
+	}
+	else if (num < 60)
+	{
+		return (GLubyte) 80;
+	}
+	else if(num < 85)
+	{
+		return (GLubyte) 160;
+	}
+	else
+	{
+		return (GLubyte) 245;
+	}
 }
 
 void Texture::createGLTexture()
@@ -60,40 +87,55 @@ void Texture::createGLTexture()
 		image);
 }
 
-Texture::Texture()
+void Texture::colorWindow(int xOffset, int yOffset)
 {
-	texId = (GLuint)101;
-
-	for(int row = 0; row < TEXTURE_HEIGHT; row++)
+	int xStart = xOffset * WINDOW_HEIGHT;
+	int yStart = yOffset * WINDOW_WIDTH;
+	int xPos, yPos;
+	GLubyte color = randomColor();
+	for(int row = 0; row < WINDOW_HEIGHT; row++)
 	{
-		for(int col = 0; col < TEXTURE_WIDTH; col++)
+		for(int col = 0; col < WINDOW_WIDTH; col++)
 		{
-			if(row % WINDOW_HEIGHT <= 1)
+			xPos = xStart + row;
+			yPos = yStart + col;
+			if(row % WINDOW_HEIGHT < WINDOW_BEZEL)
 			{
-				setBlack(row, col);
+				setBlack(xPos, yPos);
 			}
-			else if(row % WINDOW_HEIGHT >= 6)
+			else if(row % WINDOW_HEIGHT >= WINDOW_HEIGHT - WINDOW_BEZEL)
 			{
-				setBlack(row, col);
+				setBlack(xPos, yPos);
 			}
 			else
 			{
-				if(col % WINDOW_WIDTH <= 1)
+				if(col % WINDOW_WIDTH < WINDOW_BEZEL)
 				{
-					setBlack(row, col);
+					setBlack(xPos, yPos);
 				}
-				else if(col % WINDOW_WIDTH >= 6)
+				else if(col % WINDOW_WIDTH >= WINDOW_WIDTH - WINDOW_BEZEL)
 				{
-					setBlack(row, col);
+					setBlack(xPos, yPos);
 				}
 				else
 				{
-					setWhite(row, col);
+					setGrayscale(xPos, yPos, color);
 				}
-			}
+			} 
 		}
 	}
+}
 
+Texture::Texture()
+{
+	texId = (GLuint)101;
+	for(int row = 0; row < TEXTURE_HEIGHT / WINDOW_HEIGHT; row++)
+	{
+		for(int col = 0; col < TEXTURE_WIDTH / WINDOW_WIDTH; col++)
+		{
+			colorWindow(row, col);
+		}
+	}
 	createGLTexture();
 }
 
