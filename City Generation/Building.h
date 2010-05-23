@@ -8,14 +8,13 @@
 
 #include "BuildingType.h"
 #include "Texture.h"
-#include "SidewalkTexture.h"
 #include "MyUtil.h"
 
 class Building
 {
 private:
 	Texture windows;
-	SidewalkTexture sidewalk;
+	Texture sidewalk;
 	Mat4x4 trans;
 	GLint id;
 	int levels;
@@ -93,7 +92,7 @@ void Building::generateStandard()
 	// Base/Sidewalk
 	glDisable(GL_TEXTURE_2D);
 	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, sidewalk.stexId);
+	glBindTexture(GL_TEXTURE_2D, sidewalk.id);
 	//glDisable(GL_LIGHTING);
 	w = (width / 2.0) + 0.2;
 	d = (depth / 2.0) + 0.2;
@@ -123,7 +122,7 @@ void Building::generate()
 inline Building::Building(BuildingType t, int w, int d, Mat4x4 position, GLuint ident)
 {
 	windows = Texture(ident + WINDOW_OFFSET, WINDOWS);
-	sidewalk = SidewalkTexture();
+	sidewalk = Texture(ident + SIDEWALK_OFFSET, SIDEWALK);
 	type = t;
 	width = w;
 	depth = d;

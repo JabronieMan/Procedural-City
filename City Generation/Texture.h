@@ -6,11 +6,18 @@
 #include <stdio.h>
 
 #define GL_CLAMP_TO_EDGE 0x812F
-#define TEXTURE_WIDTH 64
-#define TEXTURE_HEIGHT 256
+
+//Window Texture 
+#define WINDOW_TEXTURE_WIDTH 64
+#define WINDOW_TEXTURE_HEIGHT 256
 #define WINDOW_HEIGHT 8
 #define WINDOW_WIDTH 8
 #define WINDOW_BEZEL 2
+
+//Sidewalk Texture
+#define SIDEWALK_TEXTURE_WIDTH 128
+#define SIDEWALK_TEXTURE_HEIGHT 128
+#define CRACK_INTER 16
 
 enum TextureType
 {
@@ -26,36 +33,28 @@ public:
 	Texture(GLuint name, TextureType type);
 private:
 	GLubyte * image;
-	float randR, randG, randB;
-	void setWhite(int row, int col);
-	void setBlack(int row, int col);
-	void setGreyscale(int row, int col, GLubyte color);
+	float randR, randG, randB; // Color offsets that can be used as a sudo-filter
+	void initRandomColors();
+	void setGreyscale(int row, int col, int width, GLubyte color, bool filter);
 	void colorWindow(int xOffset, int yOffset);
+	void constructWindows();
+	void pourSidewalk();
 	void createGLTexture();
-	GLubyte randomColor();
+	GLubyte randomWindowColor();
+	GLubyte randomSidewalkColor();
 };
 
-void Texture::setGreyscale(int row, int col, GLubyte color)
+void Texture::setGreyscale(int row, int col, int width, GLubyte color, bool filter)
 {
-	int offset = row * TEXTURE_WIDTH * 4 + col * 4;
+	int offset = row * width * 4 + col * 4;
 
-	*(image + offset) = color * randR;
-	*(image + (++offset)) = color * randG;
-	*(image + (++offset)) = color * randB;
+	*(image + offset) = color * (filter? randR : 1.0);
+	*(image + (++offset)) = color * (filter? randB : 1.0);
+	*(image + (++offset)) = color * (filter? randG : 1.0);
 	*(image + (++offset)) = (GLubyte) 255;
 }
 
-void Texture::setBlack(int row, int col)
-{
-	setGreyscale(row, col, (GLubyte) 0);
-}
-
-void Texture::setWhite(int row, int col)
-{
-	setGreyscale(row, col, (GLubyte) 255);
-}
-
-GLubyte Texture::randomColor()
+GLubyte Texture::randomWindowColor()
 {
 	int num = rand() % 100;
 	if(num < 50)
@@ -76,6 +75,21 @@ GLubyte Texture::randomColor()
 	}
 }
 
+GLubyte Texture::randomSidewalkColor()
+{
+	if((rand() % 10) < 5)
+		return (GLubyte) ((rand() % 100) + 20);
+	else
+		return (GLubyte) (255 - (rand() % 100) - 20);
+}
+
+void Texture::initRandomColors()
+{
+	randR = ((float)rand())/RAND_MAX;
+	randG = ((float)rand())/RAND_MAX;
+	randB = ((float)rand())/RAND_MAX;
+}
+
 void Texture::createGLTexture()
 {
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -90,8 +104,8 @@ void Texture::createGLTexture()
 		GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, 
 		GL_LINEAR);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, TEXTURE_WIDTH, 
-		TEXTURE_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, 
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, WINDOW_TEXTURE_WIDTH, 
+		WINDOW_TEXTURE_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, 
 		image);
 }
 
@@ -100,7 +114,7 @@ void Texture::colorWindow(int xOffset, int yOffset)
 	int xStart = xOffset * WINDOW_HEIGHT;
 	int yStart = yOffset * WINDOW_WIDTH;
 	int xPos, yPos;
-	GLubyte color = randomColor();
+	GLubyte color = randomWindowColor();
 	GLubyte randMod;
 	for(int row = 0; row < WINDOW_HEIGHT; row++)
 	{
@@ -110,47 +124,87 @@ void Texture::colorWindow(int xOffset, int yOffset)
 			yPos = yStart + col;
 			if(row % WINDOW_HEIGHT < WINDOW_BEZEL)
 			{
-				setBlack(xPos, yPos);
+				setGreyscale(xPos, yPos, WINDOW_TEXTURE_WIDTH, (GLubyte) 0, true);
 			}
 			else if(row % WINDOW_HEIGHT >= WINDOW_HEIGHT - WINDOW_BEZEL)
 			{
-				setBlack(xPos, yPos);
+				setGreyscale(xPos, yPos, WINDOW_TEXTURE_WIDTH, (GLubyte) 0, true);
 			}
 			else
 			{
 				if(col % WINDOW_WIDTH < WINDOW_BEZEL)
 				{
-					setBlack(xPos, yPos);
+					setGreyscale(xPos, yPos, WINDOW_TEXTURE_WIDTH, (GLubyte) 0, true);
 				}
 				else if(col % WINDOW_WIDTH >= WINDOW_WIDTH - WINDOW_BEZEL)
 				{
-					setBlack(xPos, yPos);
+					setGreyscale(xPos, yPos, WINDOW_TEXTURE_WIDTH, (GLubyte) 0, true);
 				}
 				else
 				{
 					randMod = (GLubyte) ((color % col) / ((rand() % 4)+1))*color;
-					setGreyscale(xPos, yPos, color-randMod);
+					setGreyscale(xPos, yPos, WINDOW_TEXTURE_WIDTH, color-randMod, true);
 				}
 			} 
 		}
 	}
 }
 
-Texture::Texture(GLuint name, TextureType type)
+void Texture::pourSidewalk()
 {
-	image = (GLubyte *)malloc(TEXTURE_WIDTH * TEXTURE_HEIGHT * 4);
-	id = name;
-	randR = ((float)rand())/RAND_MAX;
-	randG = ((float)rand())/RAND_MAX;
-	randB = ((float)rand())/RAND_MAX;
-	for(int row = 0; row < TEXTURE_HEIGHT / WINDOW_HEIGHT; row++)
+	image = (GLubyte *)malloc(SIDEWALK_TEXTURE_WIDTH * SIDEWALK_TEXTURE_HEIGHT * 4);
+	for(int row = 0; row < SIDEWALK_TEXTURE_HEIGHT; row++)
 	{
-		for(int col = 0; col < TEXTURE_WIDTH / WINDOW_WIDTH; col++)
+		for(int col = 0; col < SIDEWALK_TEXTURE_WIDTH; col++)
+		{
+			if((row % CRACK_INTER) == 0 && row != 0)
+			{
+				setGreyscale(row, col, SIDEWALK_TEXTURE_WIDTH, (GLubyte) 10, false);
+			}
+			else
+			{
+				if((col % CRACK_INTER) == 0 && col != 0)
+				{
+					setGreyscale(row, col, SIDEWALK_TEXTURE_WIDTH, (GLubyte) 10, false);
+				}
+				else
+				{
+					setGreyscale(row, col, SIDEWALK_TEXTURE_WIDTH, randomSidewalkColor(), false);
+				}
+			} 
+		}
+	}
+}
+
+void Texture::constructWindows()
+{
+	image = (GLubyte *)malloc(WINDOW_TEXTURE_WIDTH * WINDOW_TEXTURE_HEIGHT * 4);
+	
+	for(int row = 0; row < WINDOW_TEXTURE_HEIGHT / WINDOW_HEIGHT; row++)
+	{
+		for(int col = 0; col < WINDOW_TEXTURE_WIDTH / WINDOW_WIDTH; col++)
 		{
 			colorWindow(row, col);
 		}
 	}
+	
+}
+
+Texture::Texture(GLuint name, TextureType type)
+{
+	id = name;
+	initRandomColors();
+	switch(type)
+	{
+	case WINDOWS:
+		constructWindows();
+		break;
+	case SIDEWALK:
+		pourSidewalk();
+		break;
+	}
 	createGLTexture();
+	// image should have been malloced a fairly sizable chuck of memory in the creation process
 	free(image);
 }
 
