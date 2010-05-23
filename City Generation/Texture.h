@@ -26,6 +26,7 @@ public:
 	Texture(GLuint name, TextureType type);
 private:
 	GLubyte * image;
+	float randR, randG, randB;
 	void setWhite(int row, int col);
 	void setBlack(int row, int col);
 	void setGreyscale(int row, int col, GLubyte color);
@@ -38,9 +39,9 @@ void Texture::setGreyscale(int row, int col, GLubyte color)
 {
 	int offset = row * TEXTURE_WIDTH * 4 + col * 4;
 
-	*(image + offset) = color;
-	*(image + (++offset)) = color;
-	*(image + (++offset)) = color;
+	*(image + offset) = color * randR;
+	*(image + (++offset)) = color * randG;
+	*(image + (++offset)) = color * randB;
 	*(image + (++offset)) = (GLubyte) 255;
 }
 
@@ -139,6 +140,9 @@ Texture::Texture(GLuint name, TextureType type)
 {
 	image = (GLubyte *)malloc(TEXTURE_WIDTH * TEXTURE_HEIGHT * 4);
 	id = name;
+	randR = ((float)rand())/RAND_MAX;
+	randG = ((float)rand())/RAND_MAX;
+	randB = ((float)rand())/RAND_MAX;
 	for(int row = 0; row < TEXTURE_HEIGHT / WINDOW_HEIGHT; row++)
 	{
 		for(int col = 0; col < TEXTURE_WIDTH / WINDOW_WIDTH; col++)
