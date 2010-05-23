@@ -56,9 +56,9 @@ void createStreets(int index)
 	glColor3f(0, 0, 0);
 	glBegin(GL_POLYGON);
 	glVertex3f(-BUILD_WIDTH / 2, -BUILD_DEPTH / 2, -0.001);
-	glVertex3f(CITY_WIDTH + BUILD_WIDTH / 2, -BUILD_DEPTH / 2, -0.001);
-	glVertex3f(CITY_WIDTH + BUILD_WIDTH / 2, CITY_DEPTH + BUILD_DEPTH / 2, -0.001);
 	glVertex3f(-BUILD_WIDTH / 2, CITY_DEPTH + BUILD_DEPTH / 2, -0.001);
+	glVertex3f(CITY_WIDTH + BUILD_WIDTH / 2, CITY_DEPTH + BUILD_DEPTH / 2, -0.001);
+	glVertex3f(CITY_WIDTH + BUILD_WIDTH / 2, -BUILD_DEPTH / 2, -0.001);
 	glEnd();
 
 	glColor3f(0.9, 0.9, 0.2);
