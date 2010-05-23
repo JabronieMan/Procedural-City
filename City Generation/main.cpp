@@ -45,21 +45,73 @@ void drawCity()
 	glCallList(STREETS);
 }
 
-
 void createStreets(int index)
 {
 	GLUquadric *qobj = gluNewQuadric();
 	gluQuadricNormals( qobj, GL_TRUE );
 	glNewList( index, GL_COMPILE );
+
 	glDisable( GL_LIGHTING );  // Use simple draw color.
 	
-	glColor3f(0.01, 0.01, 0.01);
+	glColor3f(0, 0, 0);
 	glBegin(GL_POLYGON);
 	glVertex3f(-BUILD_WIDTH / 2, -BUILD_DEPTH / 2, -0.001);
 	glVertex3f(CITY_WIDTH + BUILD_WIDTH / 2, -BUILD_DEPTH / 2, -0.001);
 	glVertex3f(CITY_WIDTH + BUILD_WIDTH / 2, CITY_DEPTH + BUILD_DEPTH / 2, -0.001);
 	glVertex3f(-BUILD_WIDTH / 2, CITY_DEPTH + BUILD_DEPTH / 2, -0.001);
 	glEnd();
+
+	glColor3f(0.9, 0.9, 0.2);
+	bool on = false;
+	for(float i = BUILD_WIDTH + STREET_WIDTH/2; i < CITY_WIDTH - BUILD_WIDTH; i += BUILD_WIDTH + STREET_WIDTH)
+	{
+		for(float j = 0.5; j < CITY_WIDTH - BUILD_WIDTH; j += BUILD_WIDTH + STREET_WIDTH)
+		{
+			for(float k = j; k < j + BUILD_WIDTH; k += (BUILD_WIDTH / 8))
+			{
+				if(!on)
+				{
+					glBegin(GL_POLYGON);
+					glVertex3f(i + 0.05, k, 0);
+					glVertex3f(i - 0.05, k, 0);
+					on = !on;
+				}
+				else
+				{
+					glVertex3f(i - 0.05, k, 0);
+					glVertex3f(i + 0.05, k, 0);
+					glEnd();
+					on = !on;
+				}
+			}
+		}
+	}
+	on = false;
+	for(float i = BUILD_WIDTH + STREET_WIDTH/2; i < CITY_WIDTH - BUILD_WIDTH; i += BUILD_WIDTH + STREET_WIDTH)
+	{
+		for(float j = 0.5; j < CITY_WIDTH - BUILD_WIDTH; j += BUILD_WIDTH + STREET_WIDTH)
+		{
+			for(float k = j; k < j + BUILD_WIDTH; k += (BUILD_WIDTH / 8))
+			{
+				if(!on)
+				{
+					glBegin(GL_POLYGON);
+					glVertex3f(k, i - 0.05, 0);
+					glVertex3f(k, i + 0.05, 0);
+					on = !on;
+				}
+				else
+				{
+					glVertex3f(k, i + 0.05, 0);
+					glVertex3f(k, i - 0.05, 0);
+					glEnd();
+					on = !on;
+				}
+			}
+		}
+	}
+
+	glEnable(GL_LIGHTING);
 
 	glEndList();
 	gluDeleteQuadric(qobj);
@@ -183,6 +235,13 @@ int main( int argc, char** argv )
 	glutInitWindowPosition( 100, 100 );
 	glutCreateWindow( "Welcome to Polyville" );
 	glClearColor( 0.10, 0.10, 0.10, 0.0 ); // clear window.
+
+	glEnable (GL_LIGHTING);
+    glEnable (GL_LIGHT0);
+    glEnable (GL_BLEND);
+    glCullFace (GL_FRONT);
+    glEnable (GL_CULL_FACE);
+    glEnable (GL_POLYGON_SMOOTH);
 
 	glutDisplayFunc( display );
 	glutMouseFunc( mouse_button );

@@ -17,7 +17,7 @@
 //Sidewalk Texture
 #define SIDEWALK_TEXTURE_WIDTH 128
 #define SIDEWALK_TEXTURE_HEIGHT 128
-#define CRACK_INTER 16
+#define CRACK_INTER 8
 
 enum TextureType
 {
@@ -48,9 +48,9 @@ void Texture::setGreyscale(int row, int col, int width, GLubyte color, bool filt
 {
 	int offset = row * width * 4 + col * 4;
 
-	*(image + offset) = color * (filter? randR : 1.0);
-	*(image + (++offset)) = color * (filter? randB : 1.0);
-	*(image + (++offset)) = color * (filter? randG : 1.0);
+	*(image + offset) = color + (filter? color * randR : 0.0);
+	*(image + (++offset)) = color + (filter? color * randB : 0.0);
+	*(image + (++offset)) = color + (filter? color * randG : 0.0);
 	*(image + (++offset)) = (GLubyte) 255;
 }
 
@@ -77,10 +77,7 @@ GLubyte Texture::randomWindowColor()
 
 GLubyte Texture::randomSidewalkColor()
 {
-	if((rand() % 10) < 5)
-		return (GLubyte) ((rand() % 100) + 20);
-	else
-		return (GLubyte) (255 - (rand() % 100) - 20);
+	return (GLubyte) (255 - (rand() % 100) - 20);
 }
 
 void Texture::initRandomColors()
@@ -88,6 +85,9 @@ void Texture::initRandomColors()
 	randR = ((float)rand())/RAND_MAX;
 	randG = ((float)rand())/RAND_MAX;
 	randB = ((float)rand())/RAND_MAX;
+	randR /= 10;
+	randG /= 10;
+	randB /= 10;
 }
 
 void Texture::createGLTexture()
