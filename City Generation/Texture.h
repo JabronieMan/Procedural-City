@@ -93,6 +93,7 @@ void Texture::colorWindow(int xOffset, int yOffset)
 	int yStart = yOffset * WINDOW_WIDTH;
 	int xPos, yPos;
 	GLubyte color = randomColor();
+	GLubyte randMod;
 	for(int row = 0; row < WINDOW_HEIGHT; row++)
 	{
 		for(int col = 0; col < WINDOW_WIDTH; col++)
@@ -119,7 +120,8 @@ void Texture::colorWindow(int xOffset, int yOffset)
 				}
 				else
 				{
-					setGrayscale(xPos, yPos, color);
+					randMod = (GLubyte) ((color % col) / ((rand() % 4)+1))*color;
+					setGrayscale(xPos, yPos, color-randMod);
 				}
 			} 
 		}
