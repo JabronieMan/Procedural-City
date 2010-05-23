@@ -209,6 +209,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SidewalkTexture.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Texture.h"
 				>
 			</File>

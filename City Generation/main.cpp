@@ -52,7 +52,8 @@ void createStreets(int index)
 	gluQuadricNormals( qobj, GL_TRUE );
 	glNewList( index, GL_COMPILE );
 	glDisable( GL_LIGHTING );  // Use simple draw color.
-
+	
+	glColor3f(0.01, 0.01, 0.01);
 	glBegin(GL_POLYGON);
 	glVertex3f(-BUILD_WIDTH / 2, -BUILD_DEPTH / 2, -0.001);
 	glVertex3f(CITY_WIDTH + BUILD_WIDTH / 2, -BUILD_DEPTH / 2, -0.001);

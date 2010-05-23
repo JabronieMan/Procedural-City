@@ -23,13 +23,13 @@ public:
 private:
 	void setWhite(int row, int col);
 	void setBlack(int row, int col);
-	void setGrayscale(int row, int col, GLubyte color);
+	void setGreyscale(int row, int col, GLubyte color);
 	void colorWindow(int xOffset, int yOffset);
 	void createGLTexture();
 	GLubyte randomColor();
 };
 
-void Texture::setGrayscale(int row, int col, GLubyte color)
+void Texture::setGreyscale(int row, int col, GLubyte color)
 {
 	image[row][col][0] = color;
 	image[row][col][1] = color;
@@ -39,12 +39,12 @@ void Texture::setGrayscale(int row, int col, GLubyte color)
 
 void Texture::setBlack(int row, int col)
 {
-	setGrayscale(row, col, (GLubyte) 0);
+	setGreyscale(row, col, (GLubyte) 0);
 }
 
 void Texture::setWhite(int row, int col)
 {
-	setGrayscale(row, col, (GLubyte) 255);
+	setGreyscale(row, col, (GLubyte) 255);
 }
 
 GLubyte Texture::randomColor()
@@ -121,7 +121,7 @@ void Texture::colorWindow(int xOffset, int yOffset)
 				else
 				{
 					randMod = (GLubyte) ((color % col) / ((rand() % 4)+1))*color;
-					setGrayscale(xPos, yPos, color-randMod);
+					setGreyscale(xPos, yPos, color-randMod);
 				}
 			} 
 		}

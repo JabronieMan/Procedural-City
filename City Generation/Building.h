@@ -5,12 +5,14 @@
 
 #include "BuildingType.h"
 #include "Texture.h"
+#include "SidewalkTexture.h"
 #include "MyUtil.h"
 
 class Building
 {
 private:
 	Texture myText;
+	SidewalkTexture sidewalk;
 	Mat4x4 trans;
 	GLint id;
 	int levels;
@@ -45,53 +47,37 @@ void Building::generateStandard()
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 	glBindTexture(GL_TEXTURE_2D, myText.texId);
 	
-	int w = (width / 2) - ((rand() % (width / 2)) + 1) / 2;
-	int d = (depth / 2) - ((rand() % (depth / 2)) + 1) / 2;
+	double w = (width / 2) - ((rand() % (width / 2)) + 1) / 2;
+	double d = (depth / 2) - ((rand() % (depth / 2)) + 1) / 2;
 
 	glColor(Color(0, 0, 0));
 
 	glBegin(GL_POLYGON);
-	glTexCoord2f(1.0, 0.0);
-	glVertex3f(w, -d, 0);
-	glTexCoord2f(0.0, 0.0);
-	glVertex3f(-w, -d, 0);
-	glTexCoord2f(0.0, 1.0);
-	glVertex3f(-w, -d, levels);
-	glTexCoord2f(1.0, 1.0);
-	glVertex3f(w, -d, levels);
+	glTexCoord2f(1.0, 0.0);	glVertex3f(w, -d, 0);
+	glTexCoord2f(0.0, 0.0);	glVertex3f(-w, -d, 0);
+	glTexCoord2f(0.0, 1.0);	glVertex3f(-w, -d, levels);
+	glTexCoord2f(1.0, 1.0);	glVertex3f(w, -d, levels);
 	glEnd();
 
 	glBegin(GL_POLYGON);
-	glTexCoord2f(1.0, 1.0);
-	glVertex3f(w, d, levels);
-	glTexCoord2f(0.0, 1.0);
-	glVertex3f(-w, d, levels);
-	glTexCoord2f(0.0, 0.0);
-	glVertex3f(-w, d, 0);
-	glTexCoord2f(1.0, 0.0);
-	glVertex3f(w, d, 0);
+	glTexCoord2f(1.0, 1.0);	glVertex3f(w, d, levels);
+	glTexCoord2f(0.0, 1.0);	glVertex3f(-w, d, levels);
+	glTexCoord2f(0.0, 0.0);	glVertex3f(-w, d, 0);
+	glTexCoord2f(1.0, 0.0);	glVertex3f(w, d, 0);
 	glEnd();
 
 	glBegin(GL_POLYGON);
-	glTexCoord2f(0.0, 0.0);
-	glVertex3f(w, -d, 0);
-	glTexCoord2f(0.0, 1.0);
-	glVertex3f(w, -d, levels);
-	glTexCoord2f(1.0, 1.0);
-	glVertex3f(w, d, levels);
-	glTexCoord2f(1.0, 0.0);
-	glVertex3f(w, d, 0);
+	glTexCoord2f(0.0, 0.0);	glVertex3f(w, -d, 0);
+	glTexCoord2f(0.0, 1.0);	glVertex3f(w, -d, levels);
+	glTexCoord2f(1.0, 1.0);	glVertex3f(w, d, levels);
+	glTexCoord2f(1.0, 0.0);	glVertex3f(w, d, 0);
 	glEnd();
 	
 	glBegin(GL_POLYGON);
-	glTexCoord2f(0.0, 0.0);
-	glVertex3f(-w, d, 0);
-	glTexCoord2f(0.0, 1.0);
-	glVertex3f(-w, d, levels);
-	glTexCoord2f(1.0, 1.0);
-	glVertex3f(-w, -d, levels);
-	glTexCoord2f(1.0, 0.0);
-	glVertex3f(-w, -d, 0);
+	glTexCoord2f(0.0, 0.0);	glVertex3f(-w, d, 0);
+	glTexCoord2f(0.0, 1.0);	glVertex3f(-w, d, levels);
+	glTexCoord2f(1.0, 1.0);	glVertex3f(-w, -d, levels);
+	glTexCoord2f(1.0, 0.0);	glVertex3f(-w, -d, 0);
 	glEnd();
 
 	// Roof
@@ -103,17 +89,20 @@ void Building::generateStandard()
 	glEnd();
 
 	// Base/Sidewalk
-	glColor3f(0.8, 0.8, 0.8);
-	w = width + 0.2;
-	d = depth + 0.2;
+	glDisable(GL_TEXTURE_2D);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, sidewalk.stexId);
+	//glDisable(GL_LIGHTING);
+	w = (width / 2.0) + 0.2;
+	d = (depth / 2.0) + 0.2;
 	glBegin(GL_POLYGON);
-	glVertex3f(w, d, 0.0001);
-	glVertex3f(w, -d, 0.0001);
-	glVertex3f(-w, -d, 0.0001);
-	glVertex3f(-w, d, 0.0001);
+	glTexCoord2f(1.0, 1.0); glVertex3f(w, d, 0.0001);
+	glTexCoord2f(1.0, 0.0); glVertex3f(w, -d, 0.0001);
+	glTexCoord2f(0.0, 0.0); glVertex3f(-w, -d, 0.0001);
+	glTexCoord2f(0.0, 1.0);glVertex3f(-w, d, 0.0001);
 	glEnd();
 
-
+	glDisable(GL_TEXTURE_2D);
 	glEndList();
 	gluDeleteQuadric( qobj );
 }
@@ -132,6 +121,7 @@ void Building::generate()
 inline Building::Building(BuildingType t, int w, int d, Mat4x4 position, GLint ident)
 {
 	myText = Texture();
+	sidewalk = SidewalkTexture();
 	type = t;
 	width = w;
 	depth = d;
