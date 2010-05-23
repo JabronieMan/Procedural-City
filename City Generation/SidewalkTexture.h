@@ -54,7 +54,7 @@ void SidewalkTexture::createGLTexture()
 		GL_LINEAR);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, TEXTURE_WIDTH, 
 		TEXTURE_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, 
-		image);
+		simage);
 }
 
 SidewalkTexture::SidewalkTexture()

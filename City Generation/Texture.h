@@ -12,15 +12,20 @@
 #define WINDOW_WIDTH 8
 #define WINDOW_BEZEL 2
 
-static GLubyte image[TEXTURE_HEIGHT][TEXTURE_WIDTH][4];
+enum TextureType
+{
+	WINDOWS,
+	SIDEWALK
+};
 
 class Texture
 {
 public:
-	GLuint texId;
-
+	GLuint id;
 	Texture();
+	Texture(GLuint name, TextureType type);
 private:
+	GLubyte * image;
 	void setWhite(int row, int col);
 	void setBlack(int row, int col);
 	void setGreyscale(int row, int col, GLubyte color);
@@ -31,10 +36,12 @@ private:
 
 void Texture::setGreyscale(int row, int col, GLubyte color)
 {
-	image[row][col][0] = color;
-	image[row][col][1] = color;
-	image[row][col][2] = color;
-	image[row][col][3] = (GLubyte) 255;
+	int offset = row * TEXTURE_WIDTH * 4 + col * 4;
+
+	*(image + offset) = color;
+	*(image + (++offset)) = color;
+	*(image + (++offset)) = color;
+	*(image + (++offset)) = (GLubyte) 255;
 }
 
 void Texture::setBlack(int row, int col)
@@ -72,8 +79,8 @@ void Texture::createGLTexture()
 {
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-	glGenTextures(1, &texId);
-	glBindTexture(GL_TEXTURE_2D, texId);
+	glGenTextures(1, &id);
+	glBindTexture(GL_TEXTURE_2D, id);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, 0);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -128,9 +135,10 @@ void Texture::colorWindow(int xOffset, int yOffset)
 	}
 }
 
-Texture::Texture()
+Texture::Texture(GLuint name, TextureType type)
 {
-	texId = (GLuint)101;
+	image = (GLubyte *)malloc(TEXTURE_WIDTH * TEXTURE_HEIGHT * 4);
+	id = name;
 	for(int row = 0; row < TEXTURE_HEIGHT / WINDOW_HEIGHT; row++)
 	{
 		for(int col = 0; col < TEXTURE_WIDTH / WINDOW_WIDTH; col++)
@@ -139,6 +147,11 @@ Texture::Texture()
 		}
 	}
 	createGLTexture();
+	free(image);
+}
+
+Texture::Texture()
+{
 }
 
 #endif

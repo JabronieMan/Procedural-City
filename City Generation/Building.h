@@ -3,6 +3,9 @@
 #ifndef _BUILDING_H_
 #define _BUILDING_H_
 
+#define WINDOW_OFFSET 1000000
+#define SIDEWALK_OFFSET 2000000
+
 #include "BuildingType.h"
 #include "Texture.h"
 #include "SidewalkTexture.h"
@@ -11,7 +14,7 @@
 class Building
 {
 private:
-	Texture myText;
+	Texture windows;
 	SidewalkTexture sidewalk;
 	Mat4x4 trans;
 	GLint id;
@@ -26,8 +29,7 @@ public:
 	void increaseHeight();
 	void decreaseHeight();
 
-	inline Building(BuildingType t, int width, int depth, Mat4x4 position, GLint ident);
-	inline Building();
+	inline Building(BuildingType t, int width, int depth, Mat4x4 position, GLuint ident);
 };
 
 void Building::draw() const
@@ -45,7 +47,7 @@ void Building::generateStandard()
 	glNewList( id, GL_COMPILE );
 	glEnable(GL_TEXTURE_2D);
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-	glBindTexture(GL_TEXTURE_2D, myText.texId);
+	glBindTexture(GL_TEXTURE_2D, windows.id);
 	
 	double w = (width / 2) - ((rand() % (width / 2)) + 1) / 2;
 	double d = (depth / 2) - ((rand() % (depth / 2)) + 1) / 2;
@@ -118,9 +120,9 @@ void Building::generate()
 	}
 }
 
-inline Building::Building(BuildingType t, int w, int d, Mat4x4 position, GLint ident)
+inline Building::Building(BuildingType t, int w, int d, Mat4x4 position, GLuint ident)
 {
-	myText = Texture();
+	windows = Texture(ident + WINDOW_OFFSET, WINDOWS);
 	sidewalk = SidewalkTexture();
 	type = t;
 	width = w;
@@ -129,12 +131,6 @@ inline Building::Building(BuildingType t, int w, int d, Mat4x4 position, GLint i
 	id = ident;
 
 	generate();
-}
-
-inline Building::Building()
-{
-	myText = Texture();
-	type = NONE;
 }
 
 #endif
