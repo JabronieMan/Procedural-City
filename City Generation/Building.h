@@ -59,32 +59,35 @@ void Building::generateStandard()
 
 	glColor(Color(0, 0, 0));
 
+	float textureCoord = (w >= d? 1.0 : w/d);
+
 	glBegin(GL_POLYGON);
-	glTexCoord2f(1.0, 0.0);	glVertex3f(w, -d, 0);
-	glTexCoord2f(0.0, 0.0);	glVertex3f(-w, -d, 0);
-	glTexCoord2f(0.0, 1.0);	glVertex3f(-w, -d, levels);
-	glTexCoord2f(1.0, 1.0);	glVertex3f(w, -d, levels);
+	glTexCoord2f(textureCoord, 0.0);	glVertex3f(w, -d, 0);
+	glTexCoord2f(0.0, 0.0);				glVertex3f(-w, -d, 0);
+	glTexCoord2f(0.0, 1.0);				glVertex3f(-w, -d, levels);
+	glTexCoord2f(textureCoord, 1.0);	glVertex3f(w, -d, levels);
 	glEnd();
 
 	glBegin(GL_POLYGON);
-	glTexCoord2f(1.0, 1.0);	glVertex3f(w, d, levels);
-	glTexCoord2f(0.0, 1.0);	glVertex3f(-w, d, levels);
-	glTexCoord2f(0.0, 0.0);	glVertex3f(-w, d, 0);
-	glTexCoord2f(1.0, 0.0);	glVertex3f(w, d, 0);
+	glTexCoord2f(textureCoord, 1.0);	glVertex3f(w, d, levels);
+	glTexCoord2f(0.0, 1.0);				glVertex3f(-w, d, levels);
+	glTexCoord2f(0.0, 0.0);				glVertex3f(-w, d, 0);
+	glTexCoord2f(textureCoord, 0.0);	glVertex3f(w, d, 0);
 	glEnd();
 
+	textureCoord = (d >= w? 1.0 : d/w);
 	glBegin(GL_POLYGON);
-	glTexCoord2f(0.0, 0.0);	glVertex3f(w, -d, 0);
-	glTexCoord2f(0.0, 1.0);	glVertex3f(w, -d, levels);
-	glTexCoord2f(1.0, 1.0);	glVertex3f(w, d, levels);
-	glTexCoord2f(1.0, 0.0);	glVertex3f(w, d, 0);
+	glTexCoord2f(0.0, 0.0);				glVertex3f(w, -d, 0);
+	glTexCoord2f(0.0, 1.0);				glVertex3f(w, -d, levels);
+	glTexCoord2f(textureCoord, 1.0);	glVertex3f(w, d, levels);
+	glTexCoord2f(textureCoord, 0.0);	glVertex3f(w, d, 0);
 	glEnd();
 	
 	glBegin(GL_POLYGON);
-	glTexCoord2f(0.0, 0.0);	glVertex3f(-w, d, 0);
-	glTexCoord2f(0.0, 1.0);	glVertex3f(-w, d, levels);
-	glTexCoord2f(1.0, 1.0);	glVertex3f(-w, -d, levels);
-	glTexCoord2f(1.0, 0.0);	glVertex3f(-w, -d, 0);
+	glTexCoord2f(0.0, 0.0);				glVertex3f(-w, d, 0);
+	glTexCoord2f(0.0, 1.0);				glVertex3f(-w, d, levels);
+	glTexCoord2f(textureCoord, 1.0);	glVertex3f(-w, -d, levels);
+	glTexCoord2f(textureCoord, 0.0);	glVertex3f(-w, -d, 0);
 	glEnd();
 
 	// Roof
