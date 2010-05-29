@@ -231,40 +231,38 @@ void Building::generateStacked()
 	glVertex3f(w, d, tier2);
 	glEnd();
 
-	oldW = w;
-	oldD = d;
 	w -= 1;
 	d -= 1;
 
 	textureCoord = (w >= d? w/oldW : d/oldD);
 
 	glBegin(GL_POLYGON);
-	glTexCoord2f(textureCoord, 0.0);	glVertex3f(w, -d, tier2);
-	glTexCoord2f(0.0, 0.0);				glVertex3f(-w, -d, tier2);
-	glTexCoord2f(0.0, 1.0);				glVertex3f(-w, -d, tier3);
-	glTexCoord2f(textureCoord, 1.0);	glVertex3f(w, -d, tier3);
+	glTexCoord2f(textureCoord, textureHeight);	glVertex3f(w, -d, tier2);
+	glTexCoord2f(0.0, textureHeight);			glVertex3f(-w, -d, tier2);
+	glTexCoord2f(0.0, 0.0);						glVertex3f(-w, -d, tier3);
+	glTexCoord2f(textureCoord, 0.0);			glVertex3f(w, -d, tier3);
 	glEnd();
 
 	glBegin(GL_POLYGON);
-	glTexCoord2f(textureCoord, 1.0);	glVertex3f(w, d, tier3);
-	glTexCoord2f(0.0, 1.0);				glVertex3f(-w, d, tier3);
-	glTexCoord2f(0.0, 0.0);				glVertex3f(-w, d, tier2);
-	glTexCoord2f(textureCoord, 0.0);	glVertex3f(w, d, tier2);
+	glTexCoord2f(0.0, textureHeight);			glVertex3f(w, d, tier3);
+	glTexCoord2f(textureCoord, textureHeight);	glVertex3f(-w, d, tier3);
+	glTexCoord2f(textureCoord, 0.0);			glVertex3f(-w, d, tier2);
+	glTexCoord2f(0.0, 0.0);						glVertex3f(w, d, tier2);
 	glEnd();
 
 	textureCoord = (d >= w? d/oldD : w/oldW);
 	glBegin(GL_POLYGON);
-	glTexCoord2f(0.0, 0.0);				glVertex3f(w, -d, tier2);
-	glTexCoord2f(0.0, 1.0);				glVertex3f(w, -d, tier3);
-	glTexCoord2f(textureCoord, 1.0);	glVertex3f(w, d, tier3);
-	glTexCoord2f(textureCoord, 0.0);	glVertex3f(w, d, tier2);
+	glTexCoord2f(textureCoord, 0.0);			glVertex3f(w, -d, tier2);
+	glTexCoord2f(0.0, textureHeight);			glVertex3f(w, -d, tier3);
+	glTexCoord2f(textureCoord, textureHeight);	glVertex3f(w, d, tier3);
+	glTexCoord2f(0.0, 0.0);						glVertex3f(w, d, tier2);
 	glEnd();
 	
 	glBegin(GL_POLYGON);
-	glTexCoord2f(0.0, 0.0);				glVertex3f(-w, d, tier2);
-	glTexCoord2f(0.0, 1.0);				glVertex3f(-w, d, tier3);
-	glTexCoord2f(textureCoord, 1.0);	glVertex3f(-w, -d, tier3);
-	glTexCoord2f(textureCoord, 0.0);	glVertex3f(-w, -d, tier2);
+	glTexCoord2f(textureCoord, 0.0);			glVertex3f(-w, d, tier2);
+	glTexCoord2f(textureCoord, textureHeight);	glVertex3f(-w, d, tier3);
+	glTexCoord2f(0.0, textureHeight);			glVertex3f(-w, -d, tier3);
+	glTexCoord2f(0.0, 0.0);						glVertex3f(-w, -d, tier2);
 	glEnd();
 	
 	// Roof
