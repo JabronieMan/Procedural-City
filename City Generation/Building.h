@@ -6,6 +6,9 @@
 #define WINDOW_OFFSET 1000000
 #define SIDEWALK_OFFSET 2000000
 
+#define STANDARD_MAX_HEIGHT 30
+#define STANDARD_MIN_HEIGHT 4
+
 #include "BuildingType.h"
 #include "Texture.h"
 #include "MyUtil.h"
@@ -21,6 +24,8 @@ private:
 	int width, depth; // Of the base to work with
 	void generate();
 	void generateStandard();
+	void generateWindows(int width, int height);
+	void generateSidewalk();
 
 public: 
 	BuildingType type;
@@ -41,15 +46,16 @@ void Building::draw() const
 
 void Building::generateStandard()
 {
+	double w = (width / 2) - ((rand() % (width / 2)) + 1) / 2;
+	double d = (depth / 2) - ((rand() % (depth / 2)) + 1) / 2;
+	generateWindows(w >= d ? w*2 : d*2, levels);
+
 	GLUquadric *qobj = gluNewQuadric();
 	gluQuadricNormals( qobj, GL_TRUE );
 	glNewList( id, GL_COMPILE );
 	glEnable(GL_TEXTURE_2D);
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 	glBindTexture(GL_TEXTURE_2D, windows.id);
-	
-	double w = (width / 2) - ((rand() % (width / 2)) + 1) / 2;
-	double d = (depth / 2) - ((rand() % (depth / 2)) + 1) / 2;
 
 	glColor(Color(0, 0, 0));
 
@@ -108,12 +114,23 @@ void Building::generateStandard()
 	gluDeleteQuadric( qobj );
 }
 
+void Building::generateWindows(int width, int height)
+{
+	windows = Texture(id + WINDOW_OFFSET, WINDOWS, (width / 2) * WINDOW_WIDTH, (height / 2) * WINDOW_HEIGHT);
+}
+
+void Building::generateSidewalk()
+{
+	sidewalk = Texture(id + SIDEWALK_OFFSET, SIDEWALK, 64, 64);
+}
+
 void Building::generate()
 {
 	switch(type)
 	{
 	case STANDARD:
-		levels = rand() % 40 + 6;
+		levels = rand() % STANDARD_MAX_HEIGHT + STANDARD_MIN_HEIGHT;
+		generateSidewalk();
 		generateStandard();
 		break;
 	}
@@ -121,8 +138,6 @@ void Building::generate()
 
 inline Building::Building(BuildingType t, int w, int d, Mat4x4 position, GLuint ident)
 {
-	windows = Texture(ident + WINDOW_OFFSET, WINDOWS);
-	sidewalk = Texture(ident + SIDEWALK_OFFSET, SIDEWALK);
 	type = t;
 	width = w;
 	depth = d;
