@@ -8,6 +8,10 @@
 
 #define STANDARD_MAX_HEIGHT 30
 #define STANDARD_MIN_HEIGHT 4
+#define STACKED_MAX_HEIGHT 100
+#define STACKED_MIN_HEIGHT 60
+#define MODERN_MAX_HEIGHT 64
+#define MODERN_MIN_HEIGHT 32
 
 #include "BuildingType.h"
 #include "Texture.h"
@@ -24,6 +28,9 @@ private:
 	int width, depth; // Of the base to work with
 	void generate();
 	void generateStandard();
+	void generateStacked();
+	void generateState();
+	void generateModern();
 	void generateWindows(int width, int height);
 	void generateSidewalk();
 
@@ -117,6 +124,60 @@ void Building::generateStandard()
 	gluDeleteQuadric( qobj );
 }
 
+void Building::generateStacked()
+{
+	//double w = (width / 2) - ((rand() % (width / 2)) + 1) / 2;
+	//double d = (depth / 2) - ((rand() % (depth / 2)) + 1) / 2;
+	//generateWindows(w >= d ? w*2 : d*2, levels);
+
+	GLUquadric *qobj = gluNewQuadric();
+	gluQuadricNormals( qobj, GL_TRUE );
+	glNewList( id, GL_COMPILE );
+	glEnable(GL_TEXTURE_2D);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+	glBindTexture(GL_TEXTURE_2D, windows.id);
+
+	glDisable(GL_TEXTURE_2D);
+	glEndList();
+	gluDeleteQuadric( qobj );
+}
+
+void Building::generateState()
+{
+	//double w = (width / 2) - ((rand() % (width / 2)) + 1) / 2;
+	//double d = (depth / 2) - ((rand() % (depth / 2)) + 1) / 2;
+	//generateWindows(w >= d ? w*2 : d*2, levels);
+
+	GLUquadric *qobj = gluNewQuadric();
+	gluQuadricNormals( qobj, GL_TRUE );
+	glNewList( id, GL_COMPILE );
+	glEnable(GL_TEXTURE_2D);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+	glBindTexture(GL_TEXTURE_2D, windows.id);
+
+	glDisable(GL_TEXTURE_2D);
+	glEndList();
+	gluDeleteQuadric( qobj );
+}
+
+void Building::generateModern()
+{
+	//double w = (width / 2) - ((rand() % (width / 2)) + 1) / 2;
+	//double d = (depth / 2) - ((rand() % (depth / 2)) + 1) / 2;
+	//generateWindows(w >= d ? w*2 : d*2, levels);
+
+	GLUquadric *qobj = gluNewQuadric();
+	gluQuadricNormals( qobj, GL_TRUE );
+	glNewList( id, GL_COMPILE );
+	glEnable(GL_TEXTURE_2D);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+	glBindTexture(GL_TEXTURE_2D, windows.id);
+
+	glDisable(GL_TEXTURE_2D);
+	glEndList();
+	gluDeleteQuadric( qobj );
+}
+
 void Building::generateWindows(int width, int height)
 {
 	windows = Texture(id + WINDOW_OFFSET, WINDOWS, (width / 2) * WINDOW_WIDTH, (height / 2) * WINDOW_HEIGHT);
@@ -129,13 +190,26 @@ void Building::generateSidewalk()
 
 void Building::generate()
 {
+	generateSidewalk();
 	switch(type)
 	{
 	case STANDARD:
-		levels = rand() % STANDARD_MAX_HEIGHT + STANDARD_MIN_HEIGHT;
-		generateSidewalk();
+		levels = rand() % (STANDARD_MAX_HEIGHT - STANDARD_MIN_HEIGHT) + STANDARD_MIN_HEIGHT;
 		generateStandard();
 		break;
+	case STACKED:
+		levels = rand() % (STACKED_MAX_HEIGHT - STACKED_MIN_HEIGHT) + STACKED_MIN_HEIGHT;
+		generateStacked();
+		break;
+	case STATE:
+		levels = rand() % (STATE_MAX_HEIGHT - STATE_MIN_HEIGHT) + STATE_MIN_HEIGHT;
+		generateState();
+		break;
+	case MODERN:
+		levels = rand() % (MODERN_MAX_HEIGHT - MODERN_MIN_HEIGHT) + MODERN_MIN_HEIGHT;
+		generateModern();
+		break;
+
 	}
 }
 
