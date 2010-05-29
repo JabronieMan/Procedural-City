@@ -30,7 +30,15 @@ void buildCity()
 	{
 		for(int j = BUILD_DEPTH / 2; j < CITY_DEPTH; j += (BUILD_DEPTH + STREET_WIDTH))
 		{
-			city.push_back(Building(STANDARD, BUILD_WIDTH, BUILD_DEPTH, Trans4x4(i, j), bID));
+			int choice = rand() % 100;
+			if(choice < 80)
+			{
+				city.push_back(Building(STANDARD, BUILD_WIDTH, BUILD_DEPTH, Trans4x4(i, j), bID));
+			}
+			else if(choice < 85)
+			{
+				city.push_back(Building(STACKED, BUILD_WIDTH, BUILD_DEPTH, Trans4x4(i, j), bID));
+			}
 			bID++;
 		}
 	}

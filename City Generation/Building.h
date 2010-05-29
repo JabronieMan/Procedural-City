@@ -126,9 +126,19 @@ void Building::generateStandard()
 
 void Building::generateStacked()
 {
-	//double w = (width / 2) - ((rand() % (width / 2)) + 1) / 2;
-	//double d = (depth / 2) - ((rand() % (depth / 2)) + 1) / 2;
-	//generateWindows(w >= d ? w*2 : d*2, levels);
+	double w = (width / 2) - ((rand() % 3));
+	double d = (depth / 2) - ((rand() % 3));
+
+	//These tiers are to calculate the height of the various sections
+	int base = ((rand() % 25) + 50);
+	float tier1 = levels * (base / 100.0);
+
+	base = 100 - base;
+	float tier2Off = levels * ((base / 2)/100.0);
+	float tier2 = tier1 + tier2Off;
+	float tier3 = tier2 + tier2Off;
+
+	generateWindows(w >= d ? w*2 : d*2, tier1);
 
 	GLUquadric *qobj = gluNewQuadric();
 	gluQuadricNormals( qobj, GL_TRUE );
@@ -136,6 +146,131 @@ void Building::generateStacked()
 	glEnable(GL_TEXTURE_2D);
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 	glBindTexture(GL_TEXTURE_2D, windows.id);
+
+	glColor(Color(0, 0, 0));
+
+	float textureCoord = (w >= d? 1.0 : w/d);
+
+	glBegin(GL_POLYGON);
+	glTexCoord2f(textureCoord, 0.0);	glVertex3f(w, -d, 0);
+	glTexCoord2f(0.0, 0.0);				glVertex3f(-w, -d, 0);
+	glTexCoord2f(0.0, 1.0);				glVertex3f(-w, -d, tier1);
+	glTexCoord2f(textureCoord, 1.0);	glVertex3f(w, -d, tier1);
+	glEnd();
+
+	glBegin(GL_POLYGON);
+	glTexCoord2f(textureCoord, 1.0);	glVertex3f(w, d, tier1);
+	glTexCoord2f(0.0, 1.0);				glVertex3f(-w, d, tier1);
+	glTexCoord2f(0.0, 0.0);				glVertex3f(-w, d, 0);
+	glTexCoord2f(textureCoord, 0.0);	glVertex3f(w, d, 0);
+	glEnd();
+
+	textureCoord = (d >= w? 1.0 : d/w);
+	glBegin(GL_POLYGON);
+	glTexCoord2f(0.0, 0.0);				glVertex3f(w, -d, 0);
+	glTexCoord2f(0.0, 1.0);				glVertex3f(w, -d, tier1);
+	glTexCoord2f(textureCoord, 1.0);	glVertex3f(w, d, tier1);
+	glTexCoord2f(textureCoord, 0.0);	glVertex3f(w, d, 0);
+	glEnd();
+	
+	glBegin(GL_POLYGON);
+	glTexCoord2f(0.0, 0.0);				glVertex3f(-w, d, 0);
+	glTexCoord2f(0.0, 1.0);				glVertex3f(-w, d, tier1);
+	glTexCoord2f(textureCoord, 1.0);	glVertex3f(-w, -d, tier1);
+	glTexCoord2f(textureCoord, 0.0);	glVertex3f(-w, -d, 0);
+	glEnd();
+
+	// Roof
+	glBegin(GL_POLYGON);
+	glVertex3f(w, -d, tier1);
+	glVertex3f(-w, -d, tier1);
+	glVertex3f(-w, d, tier1);
+	glVertex3f(w, d, tier1);
+	glEnd();
+
+	w -= 1;
+	d -= 1;
+
+	textureCoord = (w >= d? 1.0 : w/d);
+
+	glBegin(GL_POLYGON);
+	glTexCoord2f(textureCoord, 0.0);	glVertex3f(w, -d, tier1);
+	glTexCoord2f(0.0, 0.0);				glVertex3f(-w, -d, tier1);
+	glTexCoord2f(0.0, 1.0);				glVertex3f(-w, -d, tier2);
+	glTexCoord2f(textureCoord, 1.0);	glVertex3f(w, -d, tier2);
+	glEnd();
+
+	glBegin(GL_POLYGON);
+	glTexCoord2f(textureCoord, 1.0);	glVertex3f(w, d, tier2);
+	glTexCoord2f(0.0, 1.0);				glVertex3f(-w, d, tier2);
+	glTexCoord2f(0.0, 0.0);				glVertex3f(-w, d, tier1);
+	glTexCoord2f(textureCoord, 0.0);	glVertex3f(w, d, tier1);
+	glEnd();
+
+	textureCoord = (d >= w? 1.0 : d/w);
+	glBegin(GL_POLYGON);
+	glTexCoord2f(0.0, 0.0);				glVertex3f(w, -d, tier1);
+	glTexCoord2f(0.0, 1.0);				glVertex3f(w, -d, tier2);
+	glTexCoord2f(textureCoord, 1.0);	glVertex3f(w, d, tier2);
+	glTexCoord2f(textureCoord, 0.0);	glVertex3f(w, d, tier1);
+	glEnd();
+	
+	glBegin(GL_POLYGON);
+	glTexCoord2f(0.0, 0.0);				glVertex3f(-w, d, tier1);
+	glTexCoord2f(0.0, 1.0);				glVertex3f(-w, d, tier2);
+	glTexCoord2f(textureCoord, 1.0);	glVertex3f(-w, -d, tier2);
+	glTexCoord2f(textureCoord, 0.0);	glVertex3f(-w, -d, tier1);
+	glEnd();
+	
+	// Roof
+	glBegin(GL_POLYGON);
+	glVertex3f(w, -d, tier2);
+	glVertex3f(-w, -d, tier2);
+	glVertex3f(-w, d, tier2);
+	glVertex3f(w, d, tier2);
+	glEnd();
+
+	w -= 1;
+	d -= 1;
+
+	textureCoord = (w >= d? 1.0 : w/d);
+
+	glBegin(GL_POLYGON);
+	glTexCoord2f(textureCoord, 0.0);	glVertex3f(w, -d, tier2);
+	glTexCoord2f(0.0, 0.0);				glVertex3f(-w, -d, tier2);
+	glTexCoord2f(0.0, 1.0);				glVertex3f(-w, -d, tier3);
+	glTexCoord2f(textureCoord, 1.0);	glVertex3f(w, -d, tier3);
+	glEnd();
+
+	glBegin(GL_POLYGON);
+	glTexCoord2f(textureCoord, 1.0);	glVertex3f(w, d, tier3);
+	glTexCoord2f(0.0, 1.0);				glVertex3f(-w, d, tier3);
+	glTexCoord2f(0.0, 0.0);				glVertex3f(-w, d, tier2);
+	glTexCoord2f(textureCoord, 0.0);	glVertex3f(w, d, tier2);
+	glEnd();
+
+	textureCoord = (d >= w? 1.0 : d/w);
+	glBegin(GL_POLYGON);
+	glTexCoord2f(0.0, 0.0);				glVertex3f(w, -d, tier2);
+	glTexCoord2f(0.0, 1.0);				glVertex3f(w, -d, tier3);
+	glTexCoord2f(textureCoord, 1.0);	glVertex3f(w, d, tier3);
+	glTexCoord2f(textureCoord, 0.0);	glVertex3f(w, d, tier2);
+	glEnd();
+	
+	glBegin(GL_POLYGON);
+	glTexCoord2f(0.0, 0.0);				glVertex3f(-w, d, tier2);
+	glTexCoord2f(0.0, 1.0);				glVertex3f(-w, d, tier3);
+	glTexCoord2f(textureCoord, 1.0);	glVertex3f(-w, -d, tier3);
+	glTexCoord2f(textureCoord, 0.0);	glVertex3f(-w, -d, tier2);
+	glEnd();
+	
+	// Roof
+	glBegin(GL_POLYGON);
+	glVertex3f(w, -d, tier3);
+	glVertex3f(-w, -d, tier3);
+	glVertex3f(-w, d, tier3);
+	glVertex3f(w, d, tier3);
+	glEnd();
 
 	glDisable(GL_TEXTURE_2D);
 	glEndList();
@@ -209,7 +344,6 @@ void Building::generate()
 		levels = rand() % (MODERN_MAX_HEIGHT - MODERN_MIN_HEIGHT) + MODERN_MIN_HEIGHT;
 		generateModern();
 		break;
-
 	}
 }
 
