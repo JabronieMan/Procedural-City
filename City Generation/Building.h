@@ -186,38 +186,41 @@ void Building::generateStacked()
 	glVertex3f(w, d, tier1);
 	glEnd();
 
+	double oldW = w;
+	double oldD = d;
 	w -= 1;
 	d -= 1;
 
-	textureCoord = (w >= d? 1.0 : w/d);
+	textureCoord = (w >= d? w/oldW : d/oldD);
+	float textureHeight = tier2Off / tier1;
 
 	glBegin(GL_POLYGON);
-	glTexCoord2f(textureCoord, 0.0);	glVertex3f(w, -d, tier1);
-	glTexCoord2f(0.0, 0.0);				glVertex3f(-w, -d, tier1);
-	glTexCoord2f(0.0, 1.0);				glVertex3f(-w, -d, tier2);
-	glTexCoord2f(textureCoord, 1.0);	glVertex3f(w, -d, tier2);
+	glTexCoord2f(textureCoord, 0.0);			glVertex3f(w, -d, tier1);
+	glTexCoord2f(0.0, 0.0);						glVertex3f(-w, -d, tier1);
+	glTexCoord2f(0.0, textureHeight);			glVertex3f(-w, -d, tier2);
+	glTexCoord2f(textureCoord, textureHeight);	glVertex3f(w, -d, tier2);
 	glEnd();
 
 	glBegin(GL_POLYGON);
-	glTexCoord2f(textureCoord, 1.0);	glVertex3f(w, d, tier2);
-	glTexCoord2f(0.0, 1.0);				glVertex3f(-w, d, tier2);
-	glTexCoord2f(0.0, 0.0);				glVertex3f(-w, d, tier1);
-	glTexCoord2f(textureCoord, 0.0);	glVertex3f(w, d, tier1);
+	glTexCoord2f(textureCoord, textureHeight);	glVertex3f(w, d, tier2);
+	glTexCoord2f(0.0, textureHeight);			glVertex3f(-w, d, tier2);
+	glTexCoord2f(0.0, 0.0);						glVertex3f(-w, d, tier1);
+	glTexCoord2f(textureCoord, 0.0);			glVertex3f(w, d, tier1);
 	glEnd();
 
-	textureCoord = (d >= w? 1.0 : d/w);
+	textureCoord = (d >= w? d/oldD : w/oldW);
 	glBegin(GL_POLYGON);
-	glTexCoord2f(0.0, 0.0);				glVertex3f(w, -d, tier1);
-	glTexCoord2f(0.0, 1.0);				glVertex3f(w, -d, tier2);
-	glTexCoord2f(textureCoord, 1.0);	glVertex3f(w, d, tier2);
-	glTexCoord2f(textureCoord, 0.0);	glVertex3f(w, d, tier1);
+	glTexCoord2f(0.0, 0.0);						glVertex3f(w, -d, tier1);
+	glTexCoord2f(0.0, textureHeight);			glVertex3f(w, -d, tier2);
+	glTexCoord2f(textureCoord, textureHeight);	glVertex3f(w, d, tier2);
+	glTexCoord2f(textureCoord, 0.0);			glVertex3f(w, d, tier1);
 	glEnd();
 	
 	glBegin(GL_POLYGON);
-	glTexCoord2f(0.0, 0.0);				glVertex3f(-w, d, tier1);
-	glTexCoord2f(0.0, 1.0);				glVertex3f(-w, d, tier2);
-	glTexCoord2f(textureCoord, 1.0);	glVertex3f(-w, -d, tier2);
-	glTexCoord2f(textureCoord, 0.0);	glVertex3f(-w, -d, tier1);
+	glTexCoord2f(0.0, 0.0);						glVertex3f(-w, d, tier1);
+	glTexCoord2f(0.0, textureHeight);			glVertex3f(-w, d, tier2);
+	glTexCoord2f(textureCoord, textureHeight);	glVertex3f(-w, -d, tier2);
+	glTexCoord2f(textureCoord, 0.0);			glVertex3f(-w, -d, tier1);
 	glEnd();
 	
 	// Roof
@@ -228,10 +231,12 @@ void Building::generateStacked()
 	glVertex3f(w, d, tier2);
 	glEnd();
 
+	oldW = w;
+	oldD = d;
 	w -= 1;
 	d -= 1;
 
-	textureCoord = (w >= d? 1.0 : w/d);
+	textureCoord = (w >= d? w/oldW : d/oldD);
 
 	glBegin(GL_POLYGON);
 	glTexCoord2f(textureCoord, 0.0);	glVertex3f(w, -d, tier2);
@@ -247,7 +252,7 @@ void Building::generateStacked()
 	glTexCoord2f(textureCoord, 0.0);	glVertex3f(w, d, tier2);
 	glEnd();
 
-	textureCoord = (d >= w? 1.0 : d/w);
+	textureCoord = (d >= w? d/oldD : w/oldW);
 	glBegin(GL_POLYGON);
 	glTexCoord2f(0.0, 0.0);				glVertex3f(w, -d, tier2);
 	glTexCoord2f(0.0, 1.0);				glVertex3f(w, -d, tier3);
