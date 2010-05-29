@@ -106,17 +106,15 @@ void Building::generateStandard()
 	glEnd();
 
 	// Base/Sidewalk
-	glDisable(GL_TEXTURE_2D);
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, sidewalk.id);
-	//glDisable(GL_LIGHTING);
 	w = (width / 2.0) + 0.2;
 	d = (depth / 2.0) + 0.2;
 	glBegin(GL_POLYGON);
-	glTexCoord2f(1.0, 1.0); glVertex3f(w, d, 0.0001);
-	glTexCoord2f(1.0, 0.0); glVertex3f(w, -d, 0.0001);
-	glTexCoord2f(0.0, 0.0); glVertex3f(-w, -d, 0.0001);
-	glTexCoord2f(0.0, 1.0);glVertex3f(-w, d, 0.0001);
+	glTexCoord2f(1.0, 1.0); glVertex3f(w, d, 0.01);
+	glTexCoord2f(1.0, 0.0); glVertex3f(w, -d, 0.01);
+	glTexCoord2f(0.0, 0.0); glVertex3f(-w, -d, 0.01);
+	glTexCoord2f(0.0, 1.0);glVertex3f(-w, d, 0.01);
 	glEnd();
 
 	glDisable(GL_TEXTURE_2D);
@@ -270,6 +268,18 @@ void Building::generateStacked()
 	glVertex3f(-w, -d, tier3);
 	glVertex3f(-w, d, tier3);
 	glVertex3f(w, d, tier3);
+	glEnd();
+
+	// Base/Sidewalk
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, sidewalk.id);
+	w = (width / 2.0) + 0.2;
+	d = (depth / 2.0) + 0.2;
+	glBegin(GL_POLYGON);
+	glTexCoord2f(1.0, 1.0); glVertex3f(w, d, 0.01);
+	glTexCoord2f(1.0, 0.0); glVertex3f(w, -d, 0.01);
+	glTexCoord2f(0.0, 0.0); glVertex3f(-w, -d, 0.01);
+	glTexCoord2f(0.0, 1.0);glVertex3f(-w, d, 0.01);
 	glEnd();
 
 	glDisable(GL_TEXTURE_2D);
