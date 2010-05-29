@@ -254,8 +254,8 @@ void Building::generateStacked()
 	textureCoord = (d >= w? d/oldD : w/oldW);
 	glBegin(GL_POLYGON);
 	glTexCoord2f(textureCoord, 0.0);			glVertex3f(w, -d, tier2);
-	glTexCoord2f(0.0, textureHeight);			glVertex3f(w, -d, tier3);
-	glTexCoord2f(textureCoord, textureHeight);	glVertex3f(w, d, tier3);
+	glTexCoord2f(textureCoord, textureHeight);	glVertex3f(w, -d, tier3);
+	glTexCoord2f(0.0, textureHeight);			glVertex3f(w, d, tier3);
 	glTexCoord2f(0.0, 0.0);						glVertex3f(w, d, tier2);
 	glEnd();
 	
@@ -313,7 +313,7 @@ void Building::generateModern()
 {
 	double w = (width / 2) - 4;
 	double d = (depth / 2);
-	generateWindows(w >= d ? w*2 : d*2, levels);
+	generateWindows(2, levels);
 
 	GLUquadric *qobj = gluNewQuadric();
 	gluQuadricNormals( qobj, GL_TRUE );
@@ -322,11 +322,38 @@ void Building::generateModern()
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 	glBindTexture(GL_TEXTURE_2D, windows.id);
 
+	Vec3 lowOld = Vec3(0, 0, 0.0);
+	Vec3 highOld = Vec3(0, 0, levels);
+	float x, y;
+
+	for(int angle = 360; angle >= 0; angle -= 10)
+	{
+		x = -sinf((float)angle * DEGREES_TO_RADIANS) * w;
+		y = cosf((float)angle * DEGREES_TO_RADIANS) * d;
+		if(!(lowOld.x == 0 && lowOld.y == 0))
+		{
+			glBegin(GL_POLYGON);
+			glTexCoord2f(1.0, 1.0);		glVertex3f(x, y, levels);
+			glTexCoord2f(0.0, 1.0);		glVertex(highOld);
+			glTexCoord2f(0.0, 0.0);		glVertex(lowOld);
+			glTexCoord2f(1.0, 0.0);		glVertex3f(x, y, 0.0);
+			glEnd();
+		}
+		lowOld.x = x;
+		lowOld.y = y;
+		highOld.x = x;
+		highOld.y = y;
+
+		glVertex3f(x, y, levels);
+	}
+
 	glBegin(GL_TRIANGLE_FAN);
 	glVertex3f(0, 0, levels);
 	for(int angle = 360; angle >= 0; angle -= 10)
 	{
-		glVertex3f(-sinf((float)angle * DEGREES_TO_RADIANS)*w, cosf((float)angle * DEGREES_TO_RADIANS)*d, levels);
+		x = -sinf((float)angle * DEGREES_TO_RADIANS) * w;
+		y = cosf((float)angle * DEGREES_TO_RADIANS) * d;
+		glVertex3f(x, y, levels);
 	}
 	glEnd();
 
