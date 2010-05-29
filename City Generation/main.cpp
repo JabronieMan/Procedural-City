@@ -39,6 +39,10 @@ void buildCity()
 			{
 				city.push_back(Building(STACKED, BUILD_WIDTH, BUILD_DEPTH, Trans4x4(i, j), bID));
 			}
+			else
+			{
+				city.push_back(Building(MODERN, BUILD_WIDTH, BUILD_DEPTH, Trans4x4(i, j), bID));
+			}
 			bID++;
 		}
 	}

@@ -3,6 +3,9 @@
 #ifndef __MyUtil_INCLUDED__
 #define __MyUtil_INCLUDED__
 
+#define DEGREES_TO_RADIANS  .017453292F
+#define RADIANS_TO_DEGREES  57.29577951F
+
 // Include standard system header files.
 #include <iostream>
 #include <time.h>

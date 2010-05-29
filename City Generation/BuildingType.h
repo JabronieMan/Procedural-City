@@ -26,4 +26,11 @@ enum BuildingType
 	NONE
 };
 
+enum ModernFaces
+{
+	TWELVE = 12,
+	TWENTY_FOUR = 24,
+	THIRTY_SIX = 36
+};
+
 #endif

@@ -13,6 +13,7 @@
 #define MODERN_MAX_HEIGHT 64
 #define MODERN_MIN_HEIGHT 32
 
+#include <math.h>
 #include "BuildingType.h"
 #include "Texture.h"
 #include "MyUtil.h"
@@ -310,9 +311,9 @@ void Building::generateState()
 
 void Building::generateModern()
 {
-	//double w = (width / 2) - ((rand() % (width / 2)) + 1) / 2;
-	//double d = (depth / 2) - ((rand() % (depth / 2)) + 1) / 2;
-	//generateWindows(w >= d ? w*2 : d*2, levels);
+	double w = (width / 2) - 4;
+	double d = (depth / 2);
+	generateWindows(w >= d ? w*2 : d*2, levels);
 
 	GLUquadric *qobj = gluNewQuadric();
 	gluQuadricNormals( qobj, GL_TRUE );
@@ -320,6 +321,14 @@ void Building::generateModern()
 	glEnable(GL_TEXTURE_2D);
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 	glBindTexture(GL_TEXTURE_2D, windows.id);
+
+	glBegin(GL_TRIANGLE_FAN);
+	glVertex3f(0, 0, levels);
+	for(int angle = 360; angle >= 0; angle -= 10)
+	{
+		glVertex3f(-sinf((float)angle * DEGREES_TO_RADIANS)*w, cosf((float)angle * DEGREES_TO_RADIANS)*d, levels);
+	}
+	glEnd();
 
 	glDisable(GL_TEXTURE_2D);
 	glEndList();
