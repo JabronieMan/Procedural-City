@@ -17,12 +17,16 @@
 #define SKIP_RANGE 90
 #define SKIP_PROB 85
 
+#define BLOCKS_MAX_HEIGHT 150
+#define BLOCKS_MIN_HEIGHT 75
+
 enum BuildingType
 {
 	STANDARD,
 	STACKED,
 	STATE,
 	MODERN,
+	BLOCKS,
 	SPIRE,
 	FIB,
 	NONE

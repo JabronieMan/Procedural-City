@@ -35,6 +35,7 @@ private:
 	void generateStacked();
 	void generateState();
 	void generateModern();
+	void generateBlocks();
 	void generateWindows(int width, int height);
 	void generateSidewalk();
 
@@ -434,7 +435,7 @@ void Building::generateModern()
 	glDisable(GL_TEXTURE_2D);
 	glBegin(GL_TRIANGLE_FAN);
 	glVertex3f(0, 0, levels);
-	int skipdex = 0;
+	size_t skipdex = 0;
 	for(int angle = 360; angle >= 0; angle -= angleAdjust)
 	{
 		x = -sinf((float)angle * DEGREES_TO_RADIANS) * w;
@@ -456,6 +457,11 @@ void Building::generateModern()
 	glDisable(GL_TEXTURE_2D);
 	glEndList();
 	gluDeleteQuadric( qobj );
+}
+
+void Building::generateBlocks()
+{
+
 }
 
 void Building::generateWindows(int width, int height)
@@ -488,6 +494,9 @@ void Building::generate()
 	case MODERN:
 		levels = rand() % (MODERN_MAX_HEIGHT - MODERN_MIN_HEIGHT) + MODERN_MIN_HEIGHT;
 		generateModern();
+	case BLOCKS:
+		levels = rand() % (BLOCKS_MAX_HEIGHT - BLOCKS_MIN_HEIGHT) + BLOCKS_MIN_HEIGHT;
+		generateBlocks();
 		break;
 	}
 }
