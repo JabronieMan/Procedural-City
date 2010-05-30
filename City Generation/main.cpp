@@ -19,6 +19,8 @@ using namespace std;
 Camera cam;
 Vec2 mouse;
 
+bool renderWire = false;
+
 //Building build;
 //Building build2;
 vector<Building> city = vector<Building>();
@@ -196,6 +198,14 @@ void key_press( unsigned char key, int x, int y )
 		case 's':
 		case 'S':
 			moveForward(cam, -speed);
+			break;
+		case 'r':
+		case 'R':
+			renderWire = !renderWire;
+			if(renderWire)
+				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			else
+				glPolygonMode(GL_BACK, GL_FILL);
 			break;
 		case 'q':
 		case 'Q':
