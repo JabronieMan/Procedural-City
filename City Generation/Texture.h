@@ -122,7 +122,7 @@ void Texture::colorWindow(int xOffset, int yOffset)
 	int yStart = yOffset * WINDOW_WIDTH;
 	int xPos, yPos;
 	GLubyte color = randomWindowColor();
-	GLubyte randMod;
+	//GLubyte randMod;
 	for(int row = 0; row < WINDOW_HEIGHT; row++)
 	{
 		for(int col = 0; col < WINDOW_WIDTH; col++)
@@ -131,26 +131,26 @@ void Texture::colorWindow(int xOffset, int yOffset)
 			yPos = yStart + col;
 			if(row % WINDOW_HEIGHT < WINDOW_BEZEL)
 			{
-				setGreyscale(xPos, yPos, width, (GLubyte) 0, true);
+				setGreyscale(xPos, yPos, width, (GLubyte) 0, false);
 			}
 			else if(row % WINDOW_HEIGHT >= WINDOW_HEIGHT - WINDOW_BEZEL)
 			{
-				setGreyscale(xPos, yPos, width, (GLubyte) 0, true);
+				setGreyscale(xPos, yPos, width, (GLubyte) 0, false);
 			}
 			else
 			{
 				if(col % WINDOW_WIDTH < WINDOW_BEZEL)
 				{
-					setGreyscale(xPos, yPos, width, (GLubyte) 0, true);
+					setGreyscale(xPos, yPos, width, (GLubyte) 0, false);
 				}
 				else if(col % WINDOW_WIDTH >= WINDOW_WIDTH - WINDOW_BEZEL)
 				{
-					setGreyscale(xPos, yPos, width, (GLubyte) 0, true);
+					setGreyscale(xPos, yPos, width, (GLubyte) 0, false);
 				}
 				else
 				{
-					randMod = (GLubyte) ((color % col) / ((rand() % 4)+1))*color;
-					setGreyscale(xPos, yPos, width, color-randMod, true);
+					//randMod = (GLubyte) ((color % col) / ((rand() % 4)+1))*color;
+					setGreyscale(xPos, yPos, width, color, false);
 				}
 			} 
 		}

@@ -58,6 +58,7 @@ void Building::draw() const
 
 void Building::drawBox(const Vec3& min, const Vec3& max)
 {
+	glDisable(GL_TEXTURE_2D);
 	glBegin(GL_QUAD_STRIP);
 	glVertex(min);
 	glVertex3f(min.x, min.y, max.z);
@@ -84,6 +85,8 @@ void Building::drawBox(const Vec3& min, const Vec3& max)
 	glVertex(max);
 	glVertex3f(max.x, min.y, max.z);
 	glEnd();
+	glEnable(GL_TEXTURE_2D);
+
 }
 
 void Building::drawSidewalk()
@@ -461,8 +464,10 @@ void Building::generateModern()
 
 void Building::generateBlocks()
 {
-	double w = (width / 2) - ((rand() % (width / 2)) + 1) / 2;
-	double d = (depth / 2) - ((rand() % (depth / 2)) + 1) / 2;
+	double w = (width / 4) + ((rand() % 5)-2);
+	double d = (depth / 4) + ((rand() % 5)-2);
+	Vec2 center(((rand() % 5)-2), ((rand() % 5)-2));
+
 	generateWindows(w >= d ? w*2 : d*2, levels);
 
 	GLUquadric *qobj = gluNewQuadric();
@@ -472,7 +477,31 @@ void Building::generateBlocks()
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 	glBindTexture(GL_TEXTURE_2D, windows.id);
 
+	int height = levels;
+	Vec3 min = Vec3(center.x - w, center.y - d, 0.0);
+	Vec3 max = Vec3(center.x + w, center.y + d, height);
+	drawBox(min, max);
 
+	w = rand() % ((width/2)-1)+1;
+	d = rand() % ((depth/2)-1)+1;
+	height = rand() % (levels - 5);
+
+	drawBox(Vec3(-w, -d, 0), Vec3(w, d, height));
+
+	w = rand() % ((width/2)-1)+1;
+	d = rand() % ((depth/2)-1)+1;
+	height = rand() % (levels - 5);
+
+	drawBox(Vec3(-w, -d, 0), Vec3(w, d, height));
+
+	w = rand() % ((width/2)-1)+1;
+	d = rand() % ((depth/2)-1)+1;
+	height = rand() % (levels - 5);
+
+	drawBox(Vec3(-w, -d, 0), Vec3(w, d, height));
+
+
+	drawSidewalk();
 	glDisable(GL_TEXTURE_2D);
 	glEndList();
 	gluDeleteQuadric( qobj );

@@ -17,8 +17,8 @@
 #define SKIP_RANGE 90
 #define SKIP_PROB 85
 
-#define BLOCKS_MAX_HEIGHT 150
-#define BLOCKS_MIN_HEIGHT 75
+#define BLOCKS_MAX_HEIGHT 80
+#define BLOCKS_MIN_HEIGHT 50
 
 enum BuildingType
 {

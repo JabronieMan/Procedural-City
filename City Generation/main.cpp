@@ -62,7 +62,7 @@ void drawCity()
 		city[i].draw();
 	}
 	glCallList(PAVEMENT);
-	if(cam.eye.z < 75)
+	if(cam.eye.z < 75 && cam.eye.z > 0)
 		glCallList(STREETS);
 }
 
