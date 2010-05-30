@@ -15,6 +15,7 @@ using namespace std;
 #define MOVEMENT_SPEED 0.1
 
 #define STREETS 1
+#define PAVEMENT 2
 
 Camera cam;
 Vec2 mouse;
@@ -41,9 +42,13 @@ void buildCity()
 			{
 				city.push_back(Building(STACKED, BUILD_WIDTH, BUILD_DEPTH, Trans4x4(i, j), bID));
 			}
-			else
+			else if(choice < 90)
 			{
 				city.push_back(Building(MODERN, BUILD_WIDTH, BUILD_DEPTH, Trans4x4(i, j), bID));
+			}
+			else
+			{
+				city.push_back(Building(BLOCKS, BUILD_WIDTH, BUILD_DEPTH, Trans4x4(i, j), bID));
 			}
 			bID++;
 		}
@@ -56,8 +61,31 @@ void drawCity()
 	{
 		city[i].draw();
 	}
+	glCallList(PAVEMENT);
 	if(cam.eye.z < 75)
 		glCallList(STREETS);
+}
+
+void createPavement(int index)
+{
+	GLUquadric *qobj = gluNewQuadric();
+	gluQuadricNormals( qobj, GL_TRUE );
+	glNewList( index, GL_COMPILE );
+
+	glDisable( GL_LIGHTING );  // Use simple draw color.
+
+	glColor3f(0, 0, 0);
+	glBegin(GL_POLYGON);
+	glVertex3f(-BUILD_WIDTH / 2, -BUILD_DEPTH / 2, -0.001);
+	glVertex3f(-BUILD_WIDTH / 2, CITY_DEPTH + BUILD_DEPTH / 2, -0.001);
+	glVertex3f(CITY_WIDTH + BUILD_WIDTH / 2, CITY_DEPTH + BUILD_DEPTH / 2, -0.001);
+	glVertex3f(CITY_WIDTH + BUILD_WIDTH / 2, -BUILD_DEPTH / 2, -0.001);
+	glEnd();
+
+	glEnable(GL_LIGHTING);
+
+	glEndList();
+	gluDeleteQuadric(qobj);
 }
 
 void createStreets(int index)
@@ -67,14 +95,6 @@ void createStreets(int index)
 	glNewList( index, GL_COMPILE );
 
 	glDisable( GL_LIGHTING );  // Use simple draw color.
-	
-	glColor3f(0, 0, 0);
-	glBegin(GL_POLYGON);
-	glVertex3f(-BUILD_WIDTH / 2, -BUILD_DEPTH / 2, -0.001);
-	glVertex3f(-BUILD_WIDTH / 2, CITY_DEPTH + BUILD_DEPTH / 2, -0.001);
-	glVertex3f(CITY_WIDTH + BUILD_WIDTH / 2, CITY_DEPTH + BUILD_DEPTH / 2, -0.001);
-	glVertex3f(CITY_WIDTH + BUILD_WIDTH / 2, -BUILD_DEPTH / 2, -0.001);
-	glEnd();
 
 	glColor3f(0.9, 0.9, 0.2);
 	bool on = false;
@@ -204,9 +224,15 @@ void key_press( unsigned char key, int x, int y )
 		case 'R':
 			renderWire = !renderWire;
 			if(renderWire)
-				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			{
+				glClearColor( 0.90, 0.90, 0.90, 0.0 );
+				glPolygonMode(GL_BACK, GL_LINE);
+			}
 			else
+			{
+				glClearColor( 0.10, 0.10, 0.10, 0.0 );
 				glPolygonMode(GL_BACK, GL_FILL);
+			}
 			break;
 		case 'q':
 		case 'Q':
@@ -281,6 +307,7 @@ int main( int argc, char** argv )
 	glMaterial( GL_DIFFUSE  , Color(0.1,0.1,0.1) );
 	glMaterial( GL_SHININESS, 100 );
 
+	createPavement(PAVEMENT);
 	createStreets(STREETS);
 	buildCity();
 

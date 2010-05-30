@@ -461,7 +461,21 @@ void Building::generateModern()
 
 void Building::generateBlocks()
 {
+	double w = (width / 2) - ((rand() % (width / 2)) + 1) / 2;
+	double d = (depth / 2) - ((rand() % (depth / 2)) + 1) / 2;
+	generateWindows(w >= d ? w*2 : d*2, levels);
 
+	GLUquadric *qobj = gluNewQuadric();
+	gluQuadricNormals( qobj, GL_TRUE );
+	glNewList( id, GL_COMPILE );
+	glEnable(GL_TEXTURE_2D);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+	glBindTexture(GL_TEXTURE_2D, windows.id);
+
+
+	glDisable(GL_TEXTURE_2D);
+	glEndList();
+	gluDeleteQuadric( qobj );
 }
 
 void Building::generateWindows(int width, int height)
@@ -494,6 +508,7 @@ void Building::generate()
 	case MODERN:
 		levels = rand() % (MODERN_MAX_HEIGHT - MODERN_MIN_HEIGHT) + MODERN_MIN_HEIGHT;
 		generateModern();
+		break;
 	case BLOCKS:
 		levels = rand() % (BLOCKS_MAX_HEIGHT - BLOCKS_MIN_HEIGHT) + BLOCKS_MIN_HEIGHT;
 		generateBlocks();
