@@ -28,6 +28,8 @@ private:
 	int levels;
 	int width, depth; // Of the base to work with
 	void generate();
+	void drawBox(const Vec3& min, const Vec3& max);
+	void drawSidewalk();
 	void generateStandard();
 	void generateStacked();
 	void generateState();
@@ -50,6 +52,51 @@ void Building::draw() const
 	glMultMatrix(trans);
 	glCallList(id);
 	glPopMatrix();
+}
+
+void Building::drawBox(const Vec3& min, const Vec3& max)
+{
+	glBegin(GL_QUAD_STRIP);
+	glVertex(min);
+	glVertex3f(min.x, min.y, max.z);
+	glVertex3f(max.x, min.y, min.z);
+	glVertex3f(max.x, min.y, max.z);
+	glVertex3f(max.x, max.y, min.z);
+	glVertex(max);
+	glVertex3f(min.x, max.y, min.z);
+	glVertex3f(min.x, max.y, max.z);
+	glVertex(min);
+	glVertex3f(min.x, min.y, max.z);
+	glEnd();
+
+	glBegin(GL_POLYGON);
+	glVertex(min);
+	glVertex3f(max.x, min.y, min.z);
+	glVertex3f(max.x, max.y, min.z);
+	glVertex3f(min.x, max.y, min.z);
+	glEnd();
+
+	glBegin(GL_POLYGON);
+	glVertex3f(min.x, min.y, max.z);
+	glVertex3f(min.x, max.y, max.z);
+	glVertex(max);
+	glVertex3f(max.x, min.y, max.z);
+	glEnd();
+}
+
+void Building::drawSidewalk()
+{
+	double w,d;
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, sidewalk.id);
+	w = (width / 2.0) + 0.2;
+	d = (depth / 2.0) + 0.2;
+	glBegin(GL_POLYGON);
+	glTexCoord2f(1.0, 1.0); glVertex3f(w, d, 0.01);
+	glTexCoord2f(1.0, 0.0); glVertex3f(w, -d, 0.01);
+	glTexCoord2f(0.0, 0.0); glVertex3f(-w, -d, 0.01);
+	glTexCoord2f(0.0, 1.0);glVertex3f(-w, d, 0.01);
+	glEnd();
 }
 
 void Building::generateStandard()
@@ -98,6 +145,7 @@ void Building::generateStandard()
 	glTexCoord2f(textureCoord, 0.0);	glVertex3f(-w, -d, 0);
 	glEnd();
 
+	glDisable(GL_TEXTURE_2D);
 	// Roof
 	glBegin(GL_POLYGON);
 	glVertex3f(w, -d, levels);
@@ -106,19 +154,10 @@ void Building::generateStandard()
 	glVertex3f(w, d, levels);
 	glEnd();
 
-	// Base/Sidewalk
-	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, sidewalk.id);
-	w = (width / 2.0) + 0.2;
-	d = (depth / 2.0) + 0.2;
-	glBegin(GL_POLYGON);
-	glTexCoord2f(1.0, 1.0); glVertex3f(w, d, 0.01);
-	glTexCoord2f(1.0, 0.0); glVertex3f(w, -d, 0.01);
-	glTexCoord2f(0.0, 0.0); glVertex3f(-w, -d, 0.01);
-	glTexCoord2f(0.0, 1.0);glVertex3f(-w, d, 0.01);
-	glEnd();
+	drawSidewalk();
 
 	glDisable(GL_TEXTURE_2D);
+
 	glEndList();
 	gluDeleteQuadric( qobj );
 }
@@ -180,12 +219,17 @@ void Building::generateStacked()
 	glEnd();
 
 	// Roof
+	glDisable(GL_TEXTURE_2D);
 	glBegin(GL_POLYGON);
 	glVertex3f(w, -d, tier1);
 	glVertex3f(-w, -d, tier1);
 	glVertex3f(-w, d, tier1);
 	glVertex3f(w, d, tier1);
 	glEnd();
+
+	drawBox(Vec3(-w-0.3, -d-0.3, tier1-0.5), Vec3(w+0.3, d+0.3, tier1+0.5));
+
+	glEnable(GL_TEXTURE_2D);
 
 	double oldW = w;
 	double oldD = d;
@@ -225,12 +269,17 @@ void Building::generateStacked()
 	glEnd();
 	
 	// Roof
+	glDisable(GL_TEXTURE_2D);
 	glBegin(GL_POLYGON);
 	glVertex3f(w, -d, tier2);
 	glVertex3f(-w, -d, tier2);
 	glVertex3f(-w, d, tier2);
 	glVertex3f(w, d, tier2);
 	glEnd();
+
+	drawBox(Vec3(-w-0.3, -d-0.3, tier2-0.5), Vec3(w+0.3, d+0.3, tier2+0.5));
+
+	glEnable(GL_TEXTURE_2D);
 
 	w -= 1;
 	d -= 1;
@@ -267,6 +316,7 @@ void Building::generateStacked()
 	glEnd();
 	
 	// Roof
+	glDisable(GL_TEXTURE_2D);
 	glBegin(GL_POLYGON);
 	glVertex3f(w, -d, tier3);
 	glVertex3f(-w, -d, tier3);
@@ -274,17 +324,9 @@ void Building::generateStacked()
 	glVertex3f(w, d, tier3);
 	glEnd();
 
-	// Base/Sidewalk
-	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, sidewalk.id);
-	w = (width / 2.0) + 0.2;
-	d = (depth / 2.0) + 0.2;
-	glBegin(GL_POLYGON);
-	glTexCoord2f(1.0, 1.0); glVertex3f(w, d, 0.01);
-	glTexCoord2f(1.0, 0.0); glVertex3f(w, -d, 0.01);
-	glTexCoord2f(0.0, 0.0); glVertex3f(-w, -d, 0.01);
-	glTexCoord2f(0.0, 1.0);glVertex3f(-w, d, 0.01);
-	glEnd();
+	drawBox(Vec3(-w-0.3, -d-0.3, tier3-0.5), Vec3(w+0.3, d+0.3, tier3+0.5));
+
+	drawSidewalk();
 
 	glDisable(GL_TEXTURE_2D);
 	glEndList();
@@ -311,8 +353,8 @@ void Building::generateState()
 
 void Building::generateModern()
 {
-	double w = (width / 2) - 4;
-	double d = (depth / 2);
+	double w = (width / 2) - rand()%4;
+	double d = (depth / 2) - rand()%4;
 	generateWindows(2, levels);
 
 	GLUquadric *qobj = gluNewQuadric();
@@ -326,6 +368,7 @@ void Building::generateModern()
 	Vec3 highOld = Vec3(0, 0, levels);
 	float x, y;
 
+	bool flip = true;
 	for(int angle = 360; angle >= 0; angle -= 10)
 	{
 		x = -sinf((float)angle * DEGREES_TO_RADIANS) * w;
@@ -333,11 +376,23 @@ void Building::generateModern()
 		if(!(lowOld.x == 0 && lowOld.y == 0))
 		{
 			glBegin(GL_POLYGON);
-			glTexCoord2f(1.0, 1.0);		glVertex3f(x, y, levels);
-			glTexCoord2f(0.0, 1.0);		glVertex(highOld);
-			glTexCoord2f(0.0, 0.0);		glVertex(lowOld);
-			glTexCoord2f(1.0, 0.0);		glVertex3f(x, y, 0.0);
+			if(flip)
+			{
+				glTexCoord2f(1.0, 1.0);		glVertex3f(x, y, levels);
+				glTexCoord2f(0.0, 1.0);		glVertex(highOld);
+				glTexCoord2f(0.0, 0.0);		glVertex(lowOld);
+				glTexCoord2f(1.0, 0.0);		glVertex3f(x, y, 0.0);
+			}
+			else
+			{
+				glTexCoord2f(1.0, 0.0);		glVertex3f(x, y, levels);
+				glTexCoord2f(0.0, 0.0);		glVertex(highOld);
+				glTexCoord2f(0.0, 1.0);		glVertex(lowOld);
+				glTexCoord2f(1.0, 1.0);		glVertex3f(x, y, 0.0);
+			}
 			glEnd();
+
+			flip = !flip;
 		}
 		lowOld.x = x;
 		lowOld.y = y;
@@ -347,6 +402,7 @@ void Building::generateModern()
 		glVertex3f(x, y, levels);
 	}
 
+	glDisable(GL_TEXTURE_2D);
 	glBegin(GL_TRIANGLE_FAN);
 	glVertex3f(0, 0, levels);
 	for(int angle = 360; angle >= 0; angle -= 10)
@@ -357,6 +413,7 @@ void Building::generateModern()
 	}
 	glEnd();
 
+	drawSidewalk();
 	glDisable(GL_TEXTURE_2D);
 	glEndList();
 	gluDeleteQuadric( qobj );
