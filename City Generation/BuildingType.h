@@ -14,6 +14,8 @@
 
 #define MODERN_MAX_HEIGHT 64
 #define MODERN_MIN_HEIGHT 32
+#define SKIP_RANGE 90
+#define SKIP_PROB 85
 
 enum BuildingType
 {

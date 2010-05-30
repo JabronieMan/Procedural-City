@@ -14,6 +14,7 @@
 #define MODERN_MIN_HEIGHT 32
 
 #include <math.h>
+#include <vector>
 #include "BuildingType.h"
 #include "Texture.h"
 #include "MyUtil.h"
@@ -355,7 +356,7 @@ void Building::generateModern()
 {
 	double w = (width / 2) - rand()%4;
 	double d = (depth / 2) - rand()%4;
-	generateWindows(2, levels);
+	generateWindows(8, levels);
 
 	GLUquadric *qobj = gluNewQuadric();
 	gluQuadricNormals( qobj, GL_TRUE );
@@ -368,50 +369,86 @@ void Building::generateModern()
 	Vec3 highOld = Vec3(0, 0, levels);
 	float x, y;
 
-	int angleAdjust = 360 / randomModernFaces();
+	ModernFaces faces = randomModernFaces();
+	int angleAdjust = 360 / faces;
+	double textX = (THIRTY_SIX / faces) * 0.25;
+	double minX = 0, maxX = textX;
 
-	bool flip = true;
+	bool flip = true, skipped = false;
+	Vec3 newLow;
+	std::vector<int> skips;
 	for(int angle = 360; angle >= 0; angle -= angleAdjust)
 	{
 		x = -sinf((float)angle * DEGREES_TO_RADIANS) * w;
 		y = cosf((float)angle * DEGREES_TO_RADIANS) * d;
 		if(!(lowOld.x == 0 && lowOld.y == 0))
 		{
+			if(skipped)
+			{
+				minX = 0.0;
+				maxX = 1.0;
+				skipped = false;
+			}
+			
 			glBegin(GL_POLYGON);
 			if(flip)
 			{
-				glTexCoord2f(1.0, 1.0);		glVertex3f(x, y, levels);
-				glTexCoord2f(0.0, 1.0);		glVertex(highOld);
-				glTexCoord2f(0.0, 0.0);		glVertex(lowOld);
-				glTexCoord2f(1.0, 0.0);		glVertex3f(x, y, 0.0);
+				glTexCoord2f(maxX, 1.0);		glVertex3f(x, y, levels);
+				glTexCoord2f(minX, 1.0);		glVertex(highOld);
+				glTexCoord2f(minX, 0.0);		glVertex(lowOld);
+				glTexCoord2f(maxX, 0.0);		glVertex3f(x, y, 0.0);
 			}
 			else
 			{
-				glTexCoord2f(1.0, 0.0);		glVertex3f(x, y, levels);
-				glTexCoord2f(0.0, 0.0);		glVertex(highOld);
-				glTexCoord2f(0.0, 1.0);		glVertex(lowOld);
-				glTexCoord2f(1.0, 1.0);		glVertex3f(x, y, 0.0);
+				glTexCoord2f(maxX, 0.0);		glVertex3f(x, y, levels);
+				glTexCoord2f(minX, 0.0);		glVertex(highOld);
+				glTexCoord2f(minX, 1.0);		glVertex(lowOld);
+				glTexCoord2f(maxX, 1.0);		glVertex3f(x, y, 0.0);
 			}
 			glEnd();
 
 			flip = !flip;
+			if(textX < 1.0)
+			{
+				double start = rand() % (int)((1.0 - textX) * 4);
+				minX = start * 0.25;
+				maxX = minX + textX;
+			}
 		}
 		lowOld.x = x;
 		lowOld.y = y;
 		highOld.x = x;
 		highOld.y = y;
 
-		glVertex3f(x, y, levels);
+		if(angle > SKIP_RANGE)
+		{
+			if(rand() % 100 > SKIP_PROB)
+			{
+				skips.push_back(angle);
+				angle -= SKIP_RANGE;
+				skipped = true;
+			}
+		}
 	}
 
 	glDisable(GL_TEXTURE_2D);
 	glBegin(GL_TRIANGLE_FAN);
 	glVertex3f(0, 0, levels);
+	int skipdex = 0;
 	for(int angle = 360; angle >= 0; angle -= angleAdjust)
 	{
 		x = -sinf((float)angle * DEGREES_TO_RADIANS) * w;
 		y = cosf((float)angle * DEGREES_TO_RADIANS) * d;
 		glVertex3f(x, y, levels);
+
+		if(skips.size() > skipdex)
+		{
+			if(angle == skips[skipdex])
+			{
+				angle -= SKIP_RANGE;
+				skipdex++;
+			}
+		}
 	}
 	glEnd();
 

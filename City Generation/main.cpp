@@ -56,7 +56,8 @@ void drawCity()
 	{
 		city[i].draw();
 	}
-	glCallList(STREETS);
+	if(cam.eye.z < 75)
+		glCallList(STREETS);
 }
 
 void createStreets(int index)
