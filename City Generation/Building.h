@@ -368,8 +368,10 @@ void Building::generateModern()
 	Vec3 highOld = Vec3(0, 0, levels);
 	float x, y;
 
+	int angleAdjust = 360 / randomModernFaces();
+
 	bool flip = true;
-	for(int angle = 360; angle >= 0; angle -= 10)
+	for(int angle = 360; angle >= 0; angle -= angleAdjust)
 	{
 		x = -sinf((float)angle * DEGREES_TO_RADIANS) * w;
 		y = cosf((float)angle * DEGREES_TO_RADIANS) * d;
@@ -405,7 +407,7 @@ void Building::generateModern()
 	glDisable(GL_TEXTURE_2D);
 	glBegin(GL_TRIANGLE_FAN);
 	glVertex3f(0, 0, levels);
-	for(int angle = 360; angle >= 0; angle -= 10)
+	for(int angle = 360; angle >= 0; angle -= angleAdjust)
 	{
 		x = -sinf((float)angle * DEGREES_TO_RADIANS) * w;
 		y = cosf((float)angle * DEGREES_TO_RADIANS) * d;

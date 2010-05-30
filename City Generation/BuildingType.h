@@ -28,9 +28,28 @@ enum BuildingType
 
 enum ModernFaces
 {
+	EIGHT = 8,
 	TWELVE = 12,
 	TWENTY_FOUR = 24,
 	THIRTY_SIX = 36
 };
+
+ModernFaces randomModernFaces()
+{
+	int choice = rand() % 4;
+
+	switch(choice)
+	{
+	case 0:
+		return TWELVE;
+	case 1:
+		return TWENTY_FOUR;
+	case 2:
+		return THIRTY_SIX;
+	case 3:
+		return EIGHT;
+	}
+	return EIGHT;
+}
 
 #endif
