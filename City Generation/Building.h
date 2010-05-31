@@ -30,7 +30,7 @@ private:
 	int width, depth; // Of the base to work with
 	void generate();
 	void drawBox(const Vec3& min, const Vec3& max);
-	void drawBoxTextured(const Vec3& min, const Vec3& max, double maxW, double maxD);
+	void drawBoxTextured(const Vec3& min, const Vec3& max, double maxW, double maxD, double maxHeight);
 	void drawSidewalk();
 	void generateStandard();
 	void generateStacked();
@@ -90,7 +90,7 @@ void Building::drawBox(const Vec3& min, const Vec3& max)
 
 }
 
-void Building::drawBoxTextured(const Vec3& min, const Vec3& max, double maxW, double maxD)
+void Building::drawBoxTextured(const Vec3& min, const Vec3& max, double maxW, double maxD, double maxHeight)
 {
 	double w = max.x - min.x;
 	double d = max.y - min.y;
@@ -167,47 +167,12 @@ void Building::generateStandard()
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 	glBindTexture(GL_TEXTURE_2D, windows.id);
 
-	glColor(Color(0, 0, 0));
+	Vec3 min = Vec3(-w, -d, 0);
+	Vec3 max = Vec3(w, d, levels);
+	double maxW = w*2;
+	double maxD = d*2;
 
-	float textureCoord = (w >= d? 1.0 : w/d);
-
-	glBegin(GL_POLYGON);
-	glTexCoord2f(textureCoord, 0.0);	glVertex3f(w, -d, 0);
-	glTexCoord2f(0.0, 0.0);				glVertex3f(-w, -d, 0);
-	glTexCoord2f(0.0, 1.0);				glVertex3f(-w, -d, levels);
-	glTexCoord2f(textureCoord, 1.0);	glVertex3f(w, -d, levels);
-	glEnd();
-
-	glBegin(GL_POLYGON);
-	glTexCoord2f(textureCoord, 1.0);	glVertex3f(w, d, levels);
-	glTexCoord2f(0.0, 1.0);				glVertex3f(-w, d, levels);
-	glTexCoord2f(0.0, 0.0);				glVertex3f(-w, d, 0);
-	glTexCoord2f(textureCoord, 0.0);	glVertex3f(w, d, 0);
-	glEnd();
-
-	textureCoord = (d >= w? 1.0 : d/w);
-	glBegin(GL_POLYGON);
-	glTexCoord2f(0.0, 0.0);				glVertex3f(w, -d, 0);
-	glTexCoord2f(0.0, 1.0);				glVertex3f(w, -d, levels);
-	glTexCoord2f(textureCoord, 1.0);	glVertex3f(w, d, levels);
-	glTexCoord2f(textureCoord, 0.0);	glVertex3f(w, d, 0);
-	glEnd();
-	
-	glBegin(GL_POLYGON);
-	glTexCoord2f(0.0, 0.0);				glVertex3f(-w, d, 0);
-	glTexCoord2f(0.0, 1.0);				glVertex3f(-w, d, levels);
-	glTexCoord2f(textureCoord, 1.0);	glVertex3f(-w, -d, levels);
-	glTexCoord2f(textureCoord, 0.0);	glVertex3f(-w, -d, 0);
-	glEnd();
-
-	glDisable(GL_TEXTURE_2D);
-	// Roof
-	glBegin(GL_POLYGON);
-	glVertex3f(w, -d, levels);
-	glVertex3f(-w, -d, levels);
-	glVertex3f(-w, d, levels);
-	glVertex3f(w, d, levels);
-	glEnd();
+	drawBoxTextured(min, max, maxW, maxD, levels);
 
 	drawSidewalk();
 
@@ -240,97 +205,24 @@ void Building::generateStacked()
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 	glBindTexture(GL_TEXTURE_2D, windows.id);
 
-	glColor(Color(0, 0, 0));
+	Vec3 min = Vec3(-w, -d, 0);
+	Vec3 max = Vec3(w, d, tier1);
+	double maxW = w*2;
+	double maxD = d*2;
 
-	float textureCoord = (w >= d? 1.0 : w/d);
-
-	glBegin(GL_POLYGON);
-	glTexCoord2f(textureCoord, 0.0);	glVertex3f(w, -d, 0);
-	glTexCoord2f(0.0, 0.0);				glVertex3f(-w, -d, 0);
-	glTexCoord2f(0.0, 1.0);				glVertex3f(-w, -d, tier1);
-	glTexCoord2f(textureCoord, 1.0);	glVertex3f(w, -d, tier1);
-	glEnd();
-
-	glBegin(GL_POLYGON);
-	glTexCoord2f(textureCoord, 1.0);	glVertex3f(w, d, tier1);
-	glTexCoord2f(0.0, 1.0);				glVertex3f(-w, d, tier1);
-	glTexCoord2f(0.0, 0.0);				glVertex3f(-w, d, 0);
-	glTexCoord2f(textureCoord, 0.0);	glVertex3f(w, d, 0);
-	glEnd();
-
-	textureCoord = (d >= w? 1.0 : d/w);
-	glBegin(GL_POLYGON);
-	glTexCoord2f(0.0, 0.0);				glVertex3f(w, -d, 0);
-	glTexCoord2f(0.0, 1.0);				glVertex3f(w, -d, tier1);
-	glTexCoord2f(textureCoord, 1.0);	glVertex3f(w, d, tier1);
-	glTexCoord2f(textureCoord, 0.0);	glVertex3f(w, d, 0);
-	glEnd();
-	
-	glBegin(GL_POLYGON);
-	glTexCoord2f(0.0, 0.0);				glVertex3f(-w, d, 0);
-	glTexCoord2f(0.0, 1.0);				glVertex3f(-w, d, tier1);
-	glTexCoord2f(textureCoord, 1.0);	glVertex3f(-w, -d, tier1);
-	glTexCoord2f(textureCoord, 0.0);	glVertex3f(-w, -d, 0);
-	glEnd();
-
-	// Roof
-	glDisable(GL_TEXTURE_2D);
-	glBegin(GL_POLYGON);
-	glVertex3f(w, -d, tier1);
-	glVertex3f(-w, -d, tier1);
-	glVertex3f(-w, d, tier1);
-	glVertex3f(w, d, tier1);
-	glEnd();
+	drawBoxTextured(min, max, maxW, maxD, tier1);
 
 	drawBox(Vec3(-w-0.3, -d-0.3, tier1-0.5), Vec3(w+0.3, d+0.3, tier1+0.5));
 
 	glEnable(GL_TEXTURE_2D);
 
-	double oldW = w;
-	double oldD = d;
 	w -= 1;
 	d -= 1;
 
-	textureCoord = (w >= d? w/oldW : d/oldD);
-	float textureHeight = tier2Off / tier1;
+	min = Vec3(-w, -d, tier1);
+	max = Vec3(w, d, tier2);
 
-	glBegin(GL_POLYGON);
-	glTexCoord2f(textureCoord, 0.0);			glVertex3f(w, -d, tier1);
-	glTexCoord2f(0.0, 0.0);						glVertex3f(-w, -d, tier1);
-	glTexCoord2f(0.0, textureHeight);			glVertex3f(-w, -d, tier2);
-	glTexCoord2f(textureCoord, textureHeight);	glVertex3f(w, -d, tier2);
-	glEnd();
-
-	glBegin(GL_POLYGON);
-	glTexCoord2f(textureCoord, textureHeight);	glVertex3f(w, d, tier2);
-	glTexCoord2f(0.0, textureHeight);			glVertex3f(-w, d, tier2);
-	glTexCoord2f(0.0, 0.0);						glVertex3f(-w, d, tier1);
-	glTexCoord2f(textureCoord, 0.0);			glVertex3f(w, d, tier1);
-	glEnd();
-
-	textureCoord = (d >= w? d/oldD : w/oldW);
-	glBegin(GL_POLYGON);
-	glTexCoord2f(0.0, 0.0);						glVertex3f(w, -d, tier1);
-	glTexCoord2f(0.0, textureHeight);			glVertex3f(w, -d, tier2);
-	glTexCoord2f(textureCoord, textureHeight);	glVertex3f(w, d, tier2);
-	glTexCoord2f(textureCoord, 0.0);			glVertex3f(w, d, tier1);
-	glEnd();
-	
-	glBegin(GL_POLYGON);
-	glTexCoord2f(0.0, 0.0);						glVertex3f(-w, d, tier1);
-	glTexCoord2f(0.0, textureHeight);			glVertex3f(-w, d, tier2);
-	glTexCoord2f(textureCoord, textureHeight);	glVertex3f(-w, -d, tier2);
-	glTexCoord2f(textureCoord, 0.0);			glVertex3f(-w, -d, tier1);
-	glEnd();
-	
-	// Roof
-	glDisable(GL_TEXTURE_2D);
-	glBegin(GL_POLYGON);
-	glVertex3f(w, -d, tier2);
-	glVertex3f(-w, -d, tier2);
-	glVertex3f(-w, d, tier2);
-	glVertex3f(w, d, tier2);
-	glEnd();
+	drawBoxTextured(min, max, maxW, maxD, tier1);
 
 	drawBox(Vec3(-w-0.3, -d-0.3, tier2-0.5), Vec3(w+0.3, d+0.3, tier2+0.5));
 
@@ -338,46 +230,10 @@ void Building::generateStacked()
 
 	w -= 1;
 	d -= 1;
+	min = Vec3(-w, -d, tier2);
+	max = Vec3(w, d, tier3);
 
-	textureCoord = (w >= d? w/oldW : d/oldD);
-
-	glBegin(GL_POLYGON);
-	glTexCoord2f(textureCoord, textureHeight);	glVertex3f(w, -d, tier2);
-	glTexCoord2f(0.0, textureHeight);			glVertex3f(-w, -d, tier2);
-	glTexCoord2f(0.0, 0.0);						glVertex3f(-w, -d, tier3);
-	glTexCoord2f(textureCoord, 0.0);			glVertex3f(w, -d, tier3);
-	glEnd();
-
-	glBegin(GL_POLYGON);
-	glTexCoord2f(0.0, textureHeight);			glVertex3f(w, d, tier3);
-	glTexCoord2f(textureCoord, textureHeight);	glVertex3f(-w, d, tier3);
-	glTexCoord2f(textureCoord, 0.0);			glVertex3f(-w, d, tier2);
-	glTexCoord2f(0.0, 0.0);						glVertex3f(w, d, tier2);
-	glEnd();
-
-	textureCoord = (d >= w? d/oldD : w/oldW);
-	glBegin(GL_POLYGON);
-	glTexCoord2f(textureCoord, 0.0);			glVertex3f(w, -d, tier2);
-	glTexCoord2f(textureCoord, textureHeight);	glVertex3f(w, -d, tier3);
-	glTexCoord2f(0.0, textureHeight);			glVertex3f(w, d, tier3);
-	glTexCoord2f(0.0, 0.0);						glVertex3f(w, d, tier2);
-	glEnd();
-	
-	glBegin(GL_POLYGON);
-	glTexCoord2f(textureCoord, 0.0);			glVertex3f(-w, d, tier2);
-	glTexCoord2f(textureCoord, textureHeight);	glVertex3f(-w, d, tier3);
-	glTexCoord2f(0.0, textureHeight);			glVertex3f(-w, -d, tier3);
-	glTexCoord2f(0.0, 0.0);						glVertex3f(-w, -d, tier2);
-	glEnd();
-	
-	// Roof
-	glDisable(GL_TEXTURE_2D);
-	glBegin(GL_POLYGON);
-	glVertex3f(w, -d, tier3);
-	glVertex3f(-w, -d, tier3);
-	glVertex3f(-w, d, tier3);
-	glVertex3f(w, d, tier3);
-	glEnd();
+	drawBoxTextured(min, max, maxW, maxD, tier1);
 
 	drawBox(Vec3(-w-0.3, -d-0.3, tier3-0.5), Vec3(w+0.3, d+0.3, tier3+0.5));
 
@@ -532,7 +388,7 @@ void Building::generateBlocks()
 	Vec3 max = Vec3(center.x + w, center.y + d, height);
 	double maxW = w*2;
 	double maxD = d*2;
-	drawBoxTextured(min, max, maxW, maxD);
+	drawBoxTextured(min, max, maxW, maxD, levels);
 	
 	for(int i = 0; i < 4; i++)
 	{
@@ -542,7 +398,7 @@ void Building::generateBlocks()
 		center = Vec2(((rand() % 5)-2), ((rand() % 5)-2));
 		min = Vec3(center.x - w, center.y - d, 0.0);
 		max = Vec3(center.x + w, center.y + d, height);
-		drawBoxTextured(min, max, maxW, maxD);
+		drawBoxTextured(min, max, maxW, maxD, levels);
 	}
 
 	drawSidewalk();
