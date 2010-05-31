@@ -33,6 +33,7 @@ private:
 	void drawBoxTextured(const Vec3& min, const Vec3& max, double maxW, double maxD, double maxHeight);
 	void drawSidewalk();
 	void drawHelipad(double height);
+	void drawDish(Vec3 c, double r, int n, int method, double theta1, double theta2, double phi1, double phi2);
 	void generateStandard();
 	void generateStacked();
 	void generateState();
@@ -97,7 +98,7 @@ void Building::drawBoxTextured(const Vec3& min, const Vec3& max, double maxW, do
 	double d = max.y - min.y;
 	double height = (max.z - min.z) / levels;
 
-	double textureRatio = (w >= d? w/maxW : w/maxD);
+	double textureRatio = w/maxW;
 
 	glBegin(GL_POLYGON);
 	glTexCoord2f(textureRatio, 0.0);	glVertex3f(max.x, min.y, min.z);
@@ -113,7 +114,7 @@ void Building::drawBoxTextured(const Vec3& min, const Vec3& max, double maxW, do
 	glTexCoord2f(textureRatio, 0.0);	glVertex3f(max.x, max.y, min.z);
 	glEnd();
 
-	textureRatio = (d >= w? d/maxD : d/maxW);
+	textureRatio = d/maxD;
 	glBegin(GL_POLYGON);
 	glTexCoord2f(0.0, 0.0);				glVertex3f(max.x, min.y, min.z);
 	glTexCoord2f(0.0, height);			glVertex3f(max.x, min.y, max.z);
@@ -224,6 +225,68 @@ void Building::drawHelipad(double height)
 	glMaterial( GL_DIFFUSE  , Color(0.1,0.1,0.1) );
 }
 
+/*
+   Create a sphere centered at c, with radius r, and precision n
+   Draw a point for zero radius spheres
+   Use CCW facet ordering
+   "method" is 0 for quads, 1 for triangles
+      (quads look nicer in wireframe mode)
+   Partial spheres can be created using theta1->theta2, phi1->phi2
+   in radians 0 < theta < 2pi, -pi/2 < phi < pi/2
+
+   I'm not currently using this, but figured it might be useful for someone else eventually.
+*/
+void Building::drawDish(Vec3 c, double r, int n, int method, double theta1, double theta2, double phi1, double phi2)
+{
+   int i,j;
+   double t1,t2,t3;
+   Vec3 e,p;
+
+   /* Handle special cases */
+   if (r < 0)
+      r = -r;
+   if (n < 0)
+      n = -n;
+   if (n < 4 || r <= 0) {
+      glBegin(GL_POINTS);
+      glVertex3f(c.x,c.y,c.z);
+      glEnd();
+      return;
+   }
+
+   for (j=0;j<n/2;j++) {
+      t1 = phi1 + j * (phi2 - phi1) / (n/2);
+      t2 = phi1 + (j + 1) * (phi2 - phi1) / (n/2);
+
+      if (method == 0)
+         glBegin(GL_QUAD_STRIP);
+      else
+         glBegin(GL_TRIANGLE_STRIP);
+
+      for (i=0;i<=n;i++) {
+         t3 = theta1 + i * (theta2 - theta1) / n;
+
+		 e.x = cos(t2) * cos(t3);
+         e.y = sin(t2);
+         e.z = cos(t2) * sin(t3);
+         p.x = c.x + r * e.x;
+         p.y = c.y + r * e.y;
+         p.z = c.z + r * e.z;
+         glVertex3f(p.x,p.y,p.z);
+
+         e.x = cos(t1) * cos(t3);
+         e.y = sin(t1);
+         e.z = cos(t1) * sin(t3);
+         p.x = c.x + r * e.x;
+         p.y = c.y + r * e.y;
+         p.z = c.z + r * e.z;
+         glVertex3f(p.x,p.y,p.z);
+
+      }
+      glEnd();
+   }
+}
+
 void Building::generateStandard()
 {
 	double w = (width / 2) - ((rand() % (width / 2)) + 1) / 2;
@@ -247,6 +310,14 @@ void Building::generateStandard()
 	drawSidewalk();
 
 	glDisable(GL_TEXTURE_2D);
+
+	//Vec3 center(0, 0, 0);
+
+	//glPushMatrix();
+	//glMultMatrix(Trans4x4(0, 0, levels));
+	//glMultMatrix(X_Rotate4x4(180));
+	//drawDish(center, 5, 12, 0, 0, PI, -PI/2, PI/2);
+	//glPopMatrix();
 
 	glEndList();
 	gluDeleteQuadric( qobj );
@@ -492,6 +563,16 @@ void Building::generateBlocks()
 			d -= maxD/2 * (rand()/(float)RAND_MAX);
 		}
 		height = rand() % (levels - 5);
+		if(height % 2 != 0)
+			height++;
+		if((int)w % 2 != 0)
+			w--;
+		if((int)d % 2 != 0)
+			d--;
+		if(w <= 2)
+			w += 2;
+		if(d <= 2)
+			d += 2;
 		center = Vec2(((rand() % 7)-3), ((rand() % 7)-3));
 		min = Vec3(center.x - w - (rand()/((float)RAND_MAX*16)), center.y - d - (rand()/((float)RAND_MAX*16)), 0.0);
 		max = Vec3(center.x + w - (rand()/((float)RAND_MAX*16)), center.y + d - (rand()/((float)RAND_MAX*16)), height);

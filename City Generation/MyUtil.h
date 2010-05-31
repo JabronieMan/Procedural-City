@@ -5,6 +5,8 @@
 
 #define DEGREES_TO_RADIANS  .017453292F
 #define RADIANS_TO_DEGREES  57.29577951F
+#define PI					3.141592654F
+#define TWO_PI				6.283185307F
 
 // Include standard system header files.
 #include <iostream>
