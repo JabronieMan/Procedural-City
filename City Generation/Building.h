@@ -147,11 +147,40 @@ void Building::drawSidewalk()
 	glBindTexture(GL_TEXTURE_2D, sidewalk.id);
 	w = (width / 2.0) + 0.2;
 	d = (depth / 2.0) + 0.2;
+
 	glBegin(GL_POLYGON);
-	glTexCoord2f(1.0, 1.0); glVertex3f(w, d, 0.01);
-	glTexCoord2f(1.0, 0.0); glVertex3f(w, -d, 0.01);
-	glTexCoord2f(0.0, 0.0); glVertex3f(-w, -d, 0.01);
-	glTexCoord2f(0.0, 1.0);glVertex3f(-w, d, 0.01);
+	glTexCoord2f(1.0, 1.0);		glVertex3f(w, d, 0.2);
+	glTexCoord2f(1.0, 0.0);		glVertex3f(w, -d, 0.2);
+	glTexCoord2f(0.0, 0.0);		glVertex3f(-w, -d, 0.2);
+	glTexCoord2f(0.0, 1.0);		glVertex3f(-w, d, 0.2);
+	glEnd();
+
+	glBegin(GL_POLYGON);
+	glTexCoord2f(0.0, 0.0);		glVertex3f(-w, d, 0.0);
+	glTexCoord2f(1.0, 0.0);		glVertex3f(w, d, 0.0);
+	glTexCoord2f(1.0, 0.2/w);	glVertex3f(w, d, 0.2);
+	glTexCoord2f(0.0, 0.2/w);	glVertex3f(-w, d, 0.2);
+	glEnd();
+
+	glBegin(GL_POLYGON);
+	glTexCoord2f(0.0, 0.0);		glVertex3f(-w, -d, 0.0);
+	glTexCoord2f(0.0, 0.2/w);	glVertex3f(-w, -d, 0.2);
+	glTexCoord2f(1.0, 0.2/w);	glVertex3f(w, -d, 0.2);
+	glTexCoord2f(1.0, 0.0);		glVertex3f(w, -d, 0.0);
+	glEnd();
+
+	glBegin(GL_POLYGON);
+	glTexCoord2f(0.0, 0.0);		glVertex3f(-w, -d, 0.0);
+	glTexCoord2f(0.0, 1.0);		glVertex3f(-w, d, 0.0);
+	glTexCoord2f(0.2/d, 1.0);	glVertex3f(-w, d, 0.2);
+	glTexCoord2f(0.2/d, 0.0);	glVertex3f(-w, -d, 0.2);
+	glEnd();
+
+	glBegin(GL_POLYGON);
+	glTexCoord2f(0.0, 0.0);		glVertex3f(w, -d, 0.0);
+	glTexCoord2f(0.2/d, 0.0);	glVertex3f(w, -d, 0.2);
+	glTexCoord2f(0.2/d, 1.0);	glVertex3f(w, d, 0.2);
+	glTexCoord2f(0.0, 1.0);		glVertex3f(w, d, 0.0);
 	glEnd();
 }
 
@@ -452,12 +481,20 @@ void Building::generateBlocks()
 	
 	for(int i = 0; i < 3; i++)
 	{
-		w = rand() % ((width/2)-1)+1;
-		d = rand() % ((depth/2)-1)+1;
+		w = (width / 4) + ((rand() % 5)-2);
+		d = (depth / 4) + ((rand() % 5)-2);
+		if(w > maxW/2)
+		{
+			w -= maxW/2 * (rand()/(float)RAND_MAX);
+		}
+		if(d > maxD/2)
+		{
+			d -= maxD/2 * (rand()/(float)RAND_MAX);
+		}
 		height = rand() % (levels - 5);
-		center = Vec2(((rand() % 5)-2), ((rand() % 5)-2));
-		min = Vec3(center.x - w, center.y - d, 0.0);
-		max = Vec3(center.x + w, center.y + d, height);
+		center = Vec2(((rand() % 7)-3), ((rand() % 7)-3));
+		min = Vec3(center.x - w - (rand()/((float)RAND_MAX*16)), center.y - d - (rand()/((float)RAND_MAX*16)), 0.0);
+		max = Vec3(center.x + w - (rand()/((float)RAND_MAX*16)), center.y + d - (rand()/((float)RAND_MAX*16)), height);
 		drawBoxTextured(min, max, maxW, maxD, levels);
 	}
 
