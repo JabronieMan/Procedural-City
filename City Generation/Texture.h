@@ -32,11 +32,13 @@ public:
 	Texture(GLuint name, TextureType type, unsigned int w, unsigned int h);
 private:
 	unsigned int width, height;
+	unsigned int unlit, dimlit, welllit;
 	GLubyte * image;
 	float randR, randG, randB; // Color offsets that can be used as a sudo-filter
 	void initRandomColors();
 	void setGreyscale(int row, int col, int width, GLubyte color, bool filter);
 	void colorWindow(int xOffset, int yOffset);
+	void setBrightnessIntervals();
 	void constructWindows();
 	void pourSidewalk();
 	void createGLTexture();
@@ -56,16 +58,16 @@ void Texture::setGreyscale(int row, int col, int width, GLubyte color, bool filt
 
 GLubyte Texture::randomWindowColor()
 {
-	int num = rand() % 100;
-	if(num < 50)
+	unsigned int num = rand() % 100;
+	if(num < unlit)
 	{
 		return (GLubyte) 10;
 	}
-	else if (num < 60)
+	else if (num < dimlit)
 	{
 		return (GLubyte) 80;
 	}
-	else if(num < 85)
+	else if(num < welllit)
 	{
 		return (GLubyte) 160;
 	}
@@ -183,10 +185,17 @@ void Texture::pourSidewalk()
 	}
 }
 
+void Texture::setBrightnessIntervals()
+{
+	unlit = (rand() % 40) + (rand() % 10);
+	dimlit = (rand() % 40) + (rand() % 10) + unlit;
+	welllit = (rand() % 40) + (rand() % 10) + dimlit;
+}
+
 void Texture::constructWindows()
 {
 	image = (GLubyte *)malloc(width * height * 4);
-	
+	setBrightnessIntervals();
 	for(unsigned int row = 0; row < height / WINDOW_HEIGHT; row++)
 	{
 		for(unsigned int col = 0; col < width / WINDOW_WIDTH; col++)

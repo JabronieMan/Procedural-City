@@ -5,6 +5,8 @@
 #include "Vec3.h"
 
 #define PI_OVER2 1.57
+#define MIN_CAM_HEIGHT 1.5
+#define MAX_CAM_HEIGHT 500
 
 // A basic 3D based camera, tailored for OpenGL
 // Manages location, orientation, and viewing frustum
@@ -98,6 +100,11 @@ inline void moveForward(Camera &cam, double amt)
 	Vec3 direction = (cam.center - cam.eye) * amt;
 	cam.center = cam.center + direction;
 	cam.eye = cam.eye + direction;
+	if(cam.eye.z < MIN_CAM_HEIGHT)
+	{
+		cam.center.z += MIN_CAM_HEIGHT - cam.eye.z;
+		cam.eye.z += MIN_CAM_HEIGHT - cam.eye.z;
+	}
 }
 
 // Orients the camera rotation based on the theta and phi
