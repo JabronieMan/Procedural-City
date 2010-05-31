@@ -32,6 +32,7 @@ private:
 	void drawBox(const Vec3& min, const Vec3& max);
 	void drawBoxTextured(const Vec3& min, const Vec3& max, double maxW, double maxD, double maxHeight);
 	void drawSidewalk();
+	void drawHelipad(double height);
 	void generateStandard();
 	void generateStacked();
 	void generateState();
@@ -154,6 +155,46 @@ void Building::drawSidewalk()
 	glEnd();
 }
 
+void Building::drawHelipad(double height)
+{
+	height = height + 0.01; // A little offset to put it above the roof (no Z fighting).
+	glMaterial( GL_AMBIENT  , Color(0.9,0.1,0.1) );
+	glMaterial( GL_DIFFUSE  , Color(0.9,0.1,0.1) );
+
+	// The circle around
+	glBegin(GL_QUAD_STRIP);
+	for(int angle = 360; angle >= 0; angle -= 10)
+	{
+		glVertex3f(-sinf((float)angle * DEGREES_TO_RADIANS)*2, cosf((float)angle * DEGREES_TO_RADIANS)*2, height);
+		glVertex3f(-sinf((float)angle * DEGREES_TO_RADIANS)*2.20, cosf((float)angle * DEGREES_TO_RADIANS)*2.20, height);
+	}
+	glEnd();
+
+	glMaterial( GL_AMBIENT  , Color(0.9,0.9,0.9) );
+	glMaterial( GL_DIFFUSE  , Color(0.9,0.9,0.9) );
+
+	// The 'H'
+	glBegin(GL_QUADS);
+	glVertex3f(-1, -1, height);
+	glVertex3f(-1, 1, height);
+	glVertex3f(-0.5, 1, height);
+	glVertex3f(-0.5, -1, height);
+
+	glVertex3f(-0.5, -0.25, height);
+	glVertex3f(-0.5, 0.25, height);
+	glVertex3f(0.5, 0.25, height);
+	glVertex3f(0.5, -0.25, height);
+
+	glVertex3f(0.5, -1, height);
+	glVertex3f(0.5, 1, height);
+	glVertex3f(1, 1, height);
+	glVertex3f(1, -1, height);
+	glEnd();
+
+	glMaterial( GL_AMBIENT  , Color(0.02,0.02,0.02) );
+	glMaterial( GL_DIFFUSE  , Color(0.1,0.1,0.1) );
+}
+
 void Building::generateStandard()
 {
 	double w = (width / 2) - ((rand() % (width / 2)) + 1) / 2;
@@ -242,6 +283,12 @@ void Building::generateStacked()
 	drawSidewalk();
 
 	glDisable(GL_TEXTURE_2D);
+
+	if(tier3 > MIN_HELIPAD_HEIGHT && ((rand() % 100) > 85))
+	{
+		drawHelipad(tier3+0.5);
+	}
+
 	glEndList();
 	gluDeleteQuadric( qobj );
 }
@@ -265,6 +312,12 @@ void Building::generateState()
 	drawSidewalk();
 
 	glDisable(GL_TEXTURE_2D);
+
+	if(levels > MIN_HELIPAD_HEIGHT && ((rand() % 100) > 95))
+	{
+		drawHelipad(levels);
+	}
+
 	glEndList();
 	gluDeleteQuadric( qobj );
 }

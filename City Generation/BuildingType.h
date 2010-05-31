@@ -20,6 +20,8 @@
 #define BLOCKS_MAX_HEIGHT 80
 #define BLOCKS_MIN_HEIGHT 50
 
+#define MIN_HELIPAD_HEIGHT 80
+
 enum BuildingType
 {
 	STANDARD,
