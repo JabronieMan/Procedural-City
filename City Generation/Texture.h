@@ -15,6 +15,15 @@
 //Sidewalk Texture
 #define CRACK_INTER 8
 
+//Random Color Variance Range
+#define COLOR_RANGE 20
+
+//Lights
+#define UNLIT 10
+#define DIMLIT 80
+#define WELL_LIT 160
+#define BRIGHT 245
+
 //Features
 #define MIPMAP 0
 
@@ -36,7 +45,7 @@ private:
 	unsigned int width, height;
 	unsigned int unlit, dimlit, welllit;
 	GLubyte * image;
-	float randR, randG, randB; // Color offsets that can be used as a sudo-filter
+	GLubyte randR, randG, randB; // Color offsets that can be used as a sudo-filter
 	void initRandomColors();
 	void setGreyscale(int row, int col, int width, GLubyte color, bool filter);
 	void setColor(int row, int col, int width, GLubyte r, GLubyte g, GLubyte b);
@@ -63,10 +72,20 @@ void Texture::setColor(int row, int col, int width, GLubyte r, GLubyte g, GLubyt
 
 void Texture::setGreyscale(int row, int col, int width, GLubyte color, bool filter)
 {
-	setColor(row, col, width,
-		color + (filter? color * randR : 0.0),
-		color + (filter? color * randB : 0.0),
-		color + (filter? color * randG : 0.0));
+	if(color == BRIGHT)
+	{
+		setColor(row, col, width,
+			color + (filter? color - (BRIGHT - randR) : 0.0),
+			color + (filter? color - (BRIGHT - randB) : 0.0),
+			color + (filter? color - (BRIGHT - randG) : 0.0));
+	}
+	else
+	{
+		setColor(row, col, width,
+			color + (filter? color + randR : 0.0),
+			color + (filter? color + randB : 0.0),
+			color + (filter? color + randG : 0.0));
+	}
 }
 
 GLubyte Texture::randomWindowColor()
@@ -74,19 +93,19 @@ GLubyte Texture::randomWindowColor()
 	unsigned int num = rand() % 100;
 	if(num < unlit)
 	{
-		return (GLubyte) 10;
+		return (GLubyte) UNLIT;
 	}
 	else if (num < dimlit)
 	{
-		return (GLubyte) 80;
+		return (GLubyte) DIMLIT;
 	}
 	else if(num < welllit)
 	{
-		return (GLubyte) 160;
+		return (GLubyte) WELL_LIT;
 	}
 	else
 	{
-		return (GLubyte) 245;
+		return (GLubyte) BRIGHT;
 	}
 }
 
@@ -97,12 +116,9 @@ GLubyte Texture::randomSidewalkColor()
 
 void Texture::initRandomColors()
 {
-	randR = ((float)rand())/RAND_MAX;
-	randG = ((float)rand())/RAND_MAX;
-	randB = ((float)rand())/RAND_MAX;
-	randR /= 10;
-	randG /= 10;
-	randB /= 10;
+	randR = (GLubyte) (rand() % COLOR_RANGE);
+	randG = (GLubyte) (rand() % COLOR_RANGE);
+	randB = (GLubyte) (rand() % COLOR_RANGE);
 }
 
 void Texture::createGLTexture()
@@ -137,7 +153,7 @@ void Texture::colorWindow(int xOffset, int yOffset)
 	int yStart = yOffset * WINDOW_WIDTH;
 	int xPos, yPos;
 	GLubyte color = randomWindowColor();
-	//GLubyte randMod;
+	GLubyte randMod;
 	for(int row = 0; row < WINDOW_HEIGHT; row++)
 	{
 		for(int col = 0; col < WINDOW_WIDTH; col++)
@@ -164,8 +180,11 @@ void Texture::colorWindow(int xOffset, int yOffset)
 				}
 				else
 				{
-					//randMod = (GLubyte) ((color % col) / ((rand() % 4)+1))*color;
-					setGreyscale(xPos, yPos, width, color, false);
+					randMod = (GLubyte) ((color % row) / ((rand() % 4)+1))*color;
+					if(color > randMod)
+						setGreyscale(xPos, yPos, width, color-randMod, color != 245);
+					else
+						setGreyscale(xPos, yPos, width, color+randMod, color != 245);
 				}
 			} 
 		}
