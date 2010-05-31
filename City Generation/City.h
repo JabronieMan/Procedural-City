@@ -8,6 +8,7 @@
 #define STREET_WIDTH 4
 
 #include "Building.h"
+#include "Skybox.h"
 #include <vector>
 
 

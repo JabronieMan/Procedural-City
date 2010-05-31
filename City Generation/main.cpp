@@ -22,9 +22,8 @@ Vec2 mouse;
 
 bool renderWire = false;
 
-//Building build;
-//Building build2;
 vector<Building> city = vector<Building>();
+Skybox sky;
 
 void buildCity()
 {
@@ -42,13 +41,17 @@ void buildCity()
 			{
 				city.push_back(Building(STACKED, BUILD_WIDTH, BUILD_DEPTH, Trans4x4(i, j), bID));
 			}
-			else if(choice < 90)
+			else if(choice < 93)
 			{
 				city.push_back(Building(MODERN, BUILD_WIDTH, BUILD_DEPTH, Trans4x4(i, j), bID));
 			}
-			else
+			else if(choice < 98)
 			{
 				city.push_back(Building(BLOCKS, BUILD_WIDTH, BUILD_DEPTH, Trans4x4(i, j), bID));
+			}
+			else
+			{
+				city.push_back(Building(STATE, BUILD_WIDTH, BUILD_DEPTH, Trans4x4(i, j), bID));
 			}
 			bID++;
 		}
@@ -64,6 +67,8 @@ void drawCity()
 	glCallList(PAVEMENT);
 	if(cam.eye.z < 75 && cam.eye.z > 0)
 		glCallList(STREETS);
+
+	sky.draw();
 }
 
 void createPavement(int index)
@@ -305,6 +310,7 @@ int main( int argc, char** argv )
 	glMaterial( GL_DIFFUSE  , Color(0.1,0.1,0.1) );
 	glMaterial( GL_SHININESS, 100 );
 
+	sky = Skybox(Vec3(-CITY_WIDTH/2, -CITY_WIDTH/2, -CITY_WIDTH/2), Vec3(3*CITY_WIDTH/2, 3*CITY_WIDTH/2, 3*CITY_WIDTH/2));
 	createPavement(PAVEMENT);
 	createStreets(STREETS);
 	buildCity();

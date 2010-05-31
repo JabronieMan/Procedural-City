@@ -21,7 +21,9 @@
 enum TextureType
 {
 	WINDOWS,
-	SIDEWALK
+	SIDEWALK,
+	SKY_BOX_TOP,
+	SKY_BOX_SIDE
 };
 
 class Texture
@@ -37,23 +39,34 @@ private:
 	float randR, randG, randB; // Color offsets that can be used as a sudo-filter
 	void initRandomColors();
 	void setGreyscale(int row, int col, int width, GLubyte color, bool filter);
+	void setColor(int row, int col, int width, GLubyte r, GLubyte g, GLubyte b);
 	void colorWindow(int xOffset, int yOffset);
 	void setBrightnessIntervals();
 	void constructWindows();
+	void createSkyGradient();
+	void createSkyStars();
 	void pourSidewalk();
 	void createGLTexture();
 	GLubyte randomWindowColor();
 	GLubyte randomSidewalkColor();
 };
 
-void Texture::setGreyscale(int row, int col, int width, GLubyte color, bool filter)
+void Texture::setColor(int row, int col, int width, GLubyte r, GLubyte g, GLubyte b)
 {
 	int offset = row * width * 4 + col * 4;
 
-	*(image + offset) = color + (filter? color * randR : 0.0);
-	*(image + (++offset)) = color + (filter? color * randB : 0.0);
-	*(image + (++offset)) = color + (filter? color * randG : 0.0);
+	*(image + offset) = r;
+	*(image + (++offset)) = g;
+	*(image + (++offset)) = b;
 	*(image + (++offset)) = (GLubyte) 255;
+}
+
+void Texture::setGreyscale(int row, int col, int width, GLubyte color, bool filter)
+{
+	setColor(row, col, width,
+		color + (filter? color * randR : 0.0),
+		color + (filter? color * randB : 0.0),
+		color + (filter? color * randG : 0.0));
 }
 
 GLubyte Texture::randomWindowColor()
@@ -185,6 +198,38 @@ void Texture::pourSidewalk()
 	}
 }
 
+void Texture::createSkyGradient()
+{
+	image = (GLubyte *)malloc(width * height * 4);
+	for(unsigned int row = 0; row < height; row++)
+	{
+		for(unsigned int col = 0; col < width; col++)
+		{
+			setColor(row, col, width, 0, 3, 18);
+		}
+	}
+}
+
+void Texture::createSkyStars()
+{
+	image = (GLubyte *)malloc(width * height * 4);
+	for(unsigned int row = 0; row < height; row++)
+	{
+		for(unsigned int col = 0; col < width; col++)
+		{
+			if((rand() % 1000) > 997)
+			{
+				setColor(row, col, width, 200, 200, 200);
+			}
+			else
+			{
+				setColor(row, col, width, 0, 3, 18);
+			}
+		}
+	}
+
+}
+
 void Texture::setBrightnessIntervals()
 {
 	unlit = (rand() % 40) + (rand() % 10);
@@ -219,6 +264,12 @@ Texture::Texture(GLuint name, TextureType type, unsigned int w, unsigned int h)
 		break;
 	case SIDEWALK:
 		pourSidewalk();
+		break;
+	case SKY_BOX_TOP:
+		createSkyStars();
+		break;
+	case SKY_BOX_SIDE:
+		createSkyGradient();
 		break;
 	}
 	createGLTexture();

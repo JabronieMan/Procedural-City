@@ -190,6 +190,8 @@ void Building::generateStacked()
 	//These tiers are to calculate the height of the various sections
 	int base = ((rand() % 25) + 50);
 	float tier1 = levels * (base / 100.0);
+	if((int)tier1 % 2 != 0)
+		tier1++;
 
 	base = 100 - base;
 	float tier2Off = levels * ((base / 2)/100.0);
@@ -246,9 +248,10 @@ void Building::generateStacked()
 
 void Building::generateState()
 {
-	//double w = (width / 2) - ((rand() % (width / 2)) + 1) / 2;
-	//double d = (depth / 2) - ((rand() % (depth / 2)) + 1) / 2;
-	//generateWindows(w >= d ? w*2 : d*2, levels);
+	double modSquare = ((rand() % (width / 4)) + 1) / 2;
+	double w = (width / 4) + modSquare;
+	double d = (depth / 4) + modSquare;
+	generateWindows(w >= d ? w*2 : d*2, levels);
 
 	GLUquadric *qobj = gluNewQuadric();
 	gluQuadricNormals( qobj, GL_TRUE );
@@ -256,6 +259,10 @@ void Building::generateState()
 	glEnable(GL_TEXTURE_2D);
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 	glBindTexture(GL_TEXTURE_2D, windows.id);
+
+	drawBoxTextured(Vec3(-w, -d, 0), Vec3(w, d, levels), w*2, d*2, levels);
+
+	drawSidewalk();
 
 	glDisable(GL_TEXTURE_2D);
 	glEndList();
@@ -390,7 +397,7 @@ void Building::generateBlocks()
 	double maxD = d*2;
 	drawBoxTextured(min, max, maxW, maxD, levels);
 	
-	for(int i = 0; i < 4; i++)
+	for(int i = 0; i < 3; i++)
 	{
 		w = rand() % ((width/2)-1)+1;
 		d = rand() % ((depth/2)-1)+1;
