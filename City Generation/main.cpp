@@ -288,7 +288,7 @@ int main( int argc, char** argv )
 	glutInitWindowSize( DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT );
 	glutInitWindowPosition( 100, 100 );
 	glutCreateWindow( "Welcome to Polyville" );
-	glClearColor( 0.10, 0.10, 0.10, 0.0 ); // clear window.
+	glClearColor( 0.0, 0.0117, 0.10, 0.3242 ); // clear window.
 
 	glEnable (GL_LIGHTING);
     glEnable (GL_LIGHT0);

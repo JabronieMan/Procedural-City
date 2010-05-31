@@ -205,7 +205,21 @@ void Texture::createSkyGradient()
 	{
 		for(unsigned int col = 0; col < width; col++)
 		{
-			setColor(row, col, width, 0, 3, 18);
+			if(row > (height/2))
+			{
+				if((rand() % 1000) > 998)
+				{
+					setColor(row, col, width, 200, 200, 200);
+				}
+				else
+				{
+					setColor(row, col, width, 0, 3, 18);
+				}
+			}
+			else
+			{
+				setColor(row, col, width, 0, 3, (64 - (row / 8))+18);
+			}
 		}
 	}
 }
