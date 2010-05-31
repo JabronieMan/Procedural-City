@@ -30,6 +30,7 @@ private:
 	int width, depth; // Of the base to work with
 	void generate();
 	void drawBox(const Vec3& min, const Vec3& max);
+	void drawBoxTextured(const Vec3& min, const Vec3& max, double maxW, double maxD);
 	void drawSidewalk();
 	void generateStandard();
 	void generateStacked();
@@ -84,6 +85,55 @@ void Building::drawBox(const Vec3& min, const Vec3& max)
 	glVertex3f(min.x, max.y, max.z);
 	glVertex(max);
 	glVertex3f(max.x, min.y, max.z);
+	glEnd();
+	glEnable(GL_TEXTURE_2D);
+
+}
+
+void Building::drawBoxTextured(const Vec3& min, const Vec3& max, double maxW, double maxD)
+{
+	double w = max.x - min.x;
+	double d = max.y - min.y;
+	double height = (max.z - min.z) / levels;
+
+	double textureRatio = (w >= d? w/maxW : w/maxD);
+
+	glBegin(GL_POLYGON);
+	glTexCoord2f(textureRatio, 0.0);	glVertex3f(max.x, min.y, min.z);
+	glTexCoord2f(0.0, 0.0);				glVertex3f(min.x, min.y, min.z);
+	glTexCoord2f(0.0, height);			glVertex3f(min.x, min.y, max.z);
+	glTexCoord2f(textureRatio, height);	glVertex3f(max.x, min.y, max.z);
+	glEnd();
+
+	glBegin(GL_POLYGON);
+	glTexCoord2f(textureRatio, height);	glVertex3f(max.x, max.y, max.z);
+	glTexCoord2f(0.0, height);			glVertex3f(min.x, max.y, max.z);
+	glTexCoord2f(0.0, 0.0);				glVertex3f(min.x, max.y, min.z);
+	glTexCoord2f(textureRatio, 0.0);	glVertex3f(max.x, max.y, min.z);
+	glEnd();
+
+	textureRatio = (d >= w? d/maxD : d/maxW);
+	glBegin(GL_POLYGON);
+	glTexCoord2f(0.0, 0.0);				glVertex3f(max.x, min.y, min.z);
+	glTexCoord2f(0.0, height);			glVertex3f(max.x, min.y, max.z);
+	glTexCoord2f(textureRatio, height);	glVertex3f(max.x, max.y, max.z);
+	glTexCoord2f(textureRatio, 0.0);	glVertex3f(max.x, max.y, min.z);
+	glEnd();
+	
+	glBegin(GL_POLYGON);
+	glTexCoord2f(0.0, 0.0);				glVertex3f(min.x, max.y, min.z);
+	glTexCoord2f(0.0, height);			glVertex3f(min.x, max.y, max.z);
+	glTexCoord2f(textureRatio, height);	glVertex3f(min.x, min.y, max.z);
+	glTexCoord2f(textureRatio, 0.0);	glVertex3f(min.x, min.y, min.z);
+	glEnd();
+
+	glDisable(GL_TEXTURE_2D);
+	// Roof
+	glBegin(GL_POLYGON);
+	glVertex3f(max.x, min.y, max.z);
+	glVertex3f(min.x, min.y, max.z);
+	glVertex3f(min.x, max.y, max.z);
+	glVertex3f(max.x, max.y, max.z);
 	glEnd();
 	glEnable(GL_TEXTURE_2D);
 
@@ -480,26 +530,20 @@ void Building::generateBlocks()
 	int height = levels;
 	Vec3 min = Vec3(center.x - w, center.y - d, 0.0);
 	Vec3 max = Vec3(center.x + w, center.y + d, height);
-	drawBox(min, max);
-
-	w = rand() % ((width/2)-1)+1;
-	d = rand() % ((depth/2)-1)+1;
-	height = rand() % (levels - 5);
-
-	drawBox(Vec3(-w, -d, 0), Vec3(w, d, height));
-
-	w = rand() % ((width/2)-1)+1;
-	d = rand() % ((depth/2)-1)+1;
-	height = rand() % (levels - 5);
-
-	drawBox(Vec3(-w, -d, 0), Vec3(w, d, height));
-
-	w = rand() % ((width/2)-1)+1;
-	d = rand() % ((depth/2)-1)+1;
-	height = rand() % (levels - 5);
-
-	drawBox(Vec3(-w, -d, 0), Vec3(w, d, height));
-
+	double maxW = w*2;
+	double maxD = d*2;
+	drawBoxTextured(min, max, maxW, maxD);
+	
+	for(int i = 0; i < 4; i++)
+	{
+		w = rand() % ((width/2)-1)+1;
+		d = rand() % ((depth/2)-1)+1;
+		height = rand() % (levels - 5);
+		center = Vec2(((rand() % 5)-2), ((rand() % 5)-2));
+		min = Vec3(center.x - w, center.y - d, 0.0);
+		max = Vec3(center.x + w, center.y + d, height);
+		drawBoxTextured(min, max, maxW, maxD);
+	}
 
 	drawSidewalk();
 	glDisable(GL_TEXTURE_2D);

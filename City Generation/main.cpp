@@ -299,8 +299,6 @@ int main( int argc, char** argv )
 	glutSpecialFunc( special_key_press );
 	glutPassiveMotionFunc( mouse_passive_motion );
 
-	static float white[] = { 0.8, 0.8, 0.8, 1.0 };
-
 	glEnable( GL_DEPTH_TEST ); // Turn on depth buffering.
 
 	glMaterial( GL_AMBIENT  , Color(0.02,0.02,0.02) );
