@@ -308,7 +308,6 @@ int main( int argc, char** argv )
 
 	glMaterial( GL_AMBIENT  , Color(0.02,0.02,0.02) );
 	glMaterial( GL_DIFFUSE  , Color(0.1,0.1,0.1) );
-	glMaterial( GL_SHININESS, 100 );
 
 	sky = Skybox(Vec3(-CITY_WIDTH/2, -CITY_WIDTH/2, -CITY_WIDTH/2), Vec3(3*CITY_WIDTH/2, 3*CITY_WIDTH/2, 3*CITY_WIDTH/2));
 	createPavement(PAVEMENT);

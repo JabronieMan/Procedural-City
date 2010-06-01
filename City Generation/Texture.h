@@ -32,7 +32,8 @@ enum TextureType
 	WINDOWS,
 	SIDEWALK,
 	SKY_BOX_TOP,
-	SKY_BOX_SIDE
+	SKY_BOX_SIDE,
+	SKY_BOX_BOTTOM
 };
 
 class Texture
@@ -54,6 +55,7 @@ private:
 	void constructWindows();
 	void createSkyGradient();
 	void createSkyStars();
+	void createSkyBottom();
 	void pourSidewalk();
 	void createGLTexture();
 	GLubyte randomWindowColor();
@@ -193,7 +195,6 @@ void Texture::colorWindow(int xOffset, int yOffset)
 
 void Texture::pourSidewalk()
 {
-	image = (GLubyte *)malloc(width * height * 4);
 	for(unsigned int row = 0; row < height; row++)
 	{
 		for(unsigned int col = 0; col < width; col++)
@@ -219,7 +220,6 @@ void Texture::pourSidewalk()
 
 void Texture::createSkyGradient()
 {
-	image = (GLubyte *)malloc(width * height * 4);
 	for(unsigned int row = 0; row < height; row++)
 	{
 		for(unsigned int col = 0; col < width; col++)
@@ -248,9 +248,19 @@ void Texture::createSkyGradient()
 	}
 }
 
+void Texture::createSkyBottom()
+{
+	for(unsigned int row = 0; row < height; row++)
+	{
+		for(unsigned int col = 0; col < width; col++)
+		{
+			setColor(row, col, width, 0, 3, 82);
+		}
+	}
+}
+
 void Texture::createSkyStars()
 {
-	image = (GLubyte *)malloc(width * height * 4);
 	for(unsigned int row = 0; row < height; row++)
 	{
 		for(unsigned int col = 0; col < width; col++)
@@ -277,7 +287,6 @@ void Texture::setBrightnessIntervals()
 
 void Texture::constructWindows()
 {
-	image = (GLubyte *)malloc(width * height * 4);
 	setBrightnessIntervals();
 	for(unsigned int row = 0; row < height / WINDOW_HEIGHT; row++)
 	{
@@ -295,6 +304,8 @@ Texture::Texture(GLuint name, TextureType type, unsigned int w, unsigned int h)
 	width = w;
 	height = h;
 	initRandomColors();
+
+	image = (GLubyte *)malloc(width * height * 4);
 	switch(type)
 	{
 	case WINDOWS:
@@ -309,9 +320,11 @@ Texture::Texture(GLuint name, TextureType type, unsigned int w, unsigned int h)
 	case SKY_BOX_SIDE:
 		createSkyGradient();
 		break;
+	case SKY_BOX_BOTTOM:
+		createSkyBottom();
+		break;
 	}
 	createGLTexture();
-	// image should have been malloced a fairly sizable chuck of memory in the creation process
 	free(image);
 }
 

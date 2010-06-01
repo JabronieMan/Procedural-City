@@ -3,6 +3,7 @@
 
 #define STARS_TEXTURE	10000000
 #define SIDE_TEXTURE	20000000
+#define BOTTOM_TEXTURE	30000000
 #define SKY_BOX_ID		10000001
 #define SKYBOX_SIDES 1024
 
@@ -19,6 +20,7 @@ private:
 	Vec3 min, max;
 	Texture stars;
 	Texture side;
+	Texture bottom;
 
 	void constructBox();
 };
@@ -75,6 +77,15 @@ void Skybox::constructBox()
 	glTexCoord2f(0.0, 1.0);	glVertex3f(min.x, max.y, max.z);
 	glEnd();
 
+	glBindTexture(GL_TEXTURE_2D, bottom.id);
+
+	glBegin(GL_POLYGON);
+	glTexCoord2f(0.0, 0.0);	glVertex3f(min.x, min.y, min.z);
+	glTexCoord2f(0.0, 1.0);	glVertex3f(min.x, max.y, min.z);
+	glTexCoord2f(1.0, 1.0);	glVertex3f(max.x, max.y, min.z);
+	glTexCoord2f(1.0, 0.0);	glVertex3f(max.x, min.y, min.z);
+	glEnd();
+
 	glDisable(GL_TEXTURE_2D);
 	glEndList();
 	gluDeleteQuadric( qobj );
@@ -86,6 +97,7 @@ Skybox::Skybox(Vec3 mn, Vec3 mx)
 	max = mx;
 	stars = Texture(STARS_TEXTURE, SKY_BOX_TOP, SKYBOX_SIDES, SKYBOX_SIDES);
 	side = Texture(SIDE_TEXTURE, SKY_BOX_SIDE, SKYBOX_SIDES, SKYBOX_SIDES);
+	bottom = Texture(BOTTOM_TEXTURE, SKY_BOX_BOTTOM, 2, 2);
 	constructBox();
 }
 

@@ -92,6 +92,8 @@ void Building::drawBox(const Vec3& min, const Vec3& max)
 
 }
 
+// Will draw a box with no bottom.  The box will have the sides textured, the roof will be colored using 
+// whatever OpenGL material properties have been set.
 void Building::drawBoxTextured(const Vec3& min, const Vec3& max, double maxW, double maxD, double maxHeight)
 {
 	double w = max.x - min.x;
@@ -409,13 +411,45 @@ void Building::generateState()
 
 	drawBoxTextured(Vec3(-w, -d, 0), Vec3(w, d, levels), w*2, d*2, levels);
 
+	int randomHeight = rand() % (levels / 4)+(levels * 0.15);
+	randomHeight = (randomHeight / 2) * 2; // This actually will round off the height to make it divisible by two
+
+	double modW = width/2;
+	double modD = depth/2;
+	double widthOffset = (rand() % (width/4)+(width - w*2) / 2) * 2;
+	double depthOffset = (rand() % (depth/4)+(width - d*2) / 2) * 2;
+	if(widthOffset > width/2)
+		widthOffset = widthOffset - (widthOffset - width/2) - 2;
+	if(depthOffset > depth/2)
+		depthOffset = depthOffset - (depthOffset - depth/2) - 2;
+
+	drawBoxTextured(Vec3(-modW, -modD, 0), Vec3(-modW+widthOffset, -modD+depthOffset, randomHeight), w*2, d*2, levels);
+
+	drawBoxTextured(Vec3(-modW, modD-depthOffset, 0), Vec3(-modW+widthOffset, modD, randomHeight), w*2, d*2, levels);
+
+	drawBoxTextured(Vec3(modW-widthOffset, modD-depthOffset, 0), Vec3(modW, modD, randomHeight), w*2, d*2, levels);
+
+	drawBoxTextured(Vec3(modW-widthOffset, -modD, 0), Vec3(modW, -modD+depthOffset, randomHeight), w*2, d*2, levels);
+
 	drawSidewalk();
 
 	glDisable(GL_TEXTURE_2D);
 
-	if(levels > MIN_HELIPAD_HEIGHT && ((rand() % 100) > 95))
+	if(levels > MIN_HELIPAD_HEIGHT && ((rand() % 100) > 90))
 	{
 		drawHelipad(levels);
+	}
+	else
+	{
+		// Pointy roof
+		glBegin(GL_TRIANGLE_FAN);
+		glVertex3f(0, 0, (levels + (rand() % 10)+5));
+		glVertex3f(w, d, levels);
+		glVertex3f(w, -d, levels);
+		glVertex3f(-w, -d, levels);
+		glVertex3f(-w, d, levels);
+		glVertex3f(w, d, levels);
+		glEnd();
 	}
 
 	glEndList();
