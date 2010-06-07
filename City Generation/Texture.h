@@ -46,9 +46,11 @@ public:
 private:
 	unsigned int width, height;
 	unsigned int unlit, dimlit, welllit;
+	TextureType texType;
 	GLubyte * image;
 	GLubyte randR, randG, randB; // Color offsets that can be used as a sudo-filter
 	void initRandomColors();
+	bool skybox();
 	void setGreyscale(int row, int col, int width, GLubyte color, bool filter);
 	void setColor(int row, int col, int width, GLubyte r, GLubyte g, GLubyte b);
 	void colorWindow(int xOffset, int yOffset);
@@ -124,6 +126,11 @@ void Texture::initRandomColors()
 	randB = (GLubyte) (rand() % COLOR_RANGE);
 }
 
+bool Texture::skybox()
+{
+	return texType == SKY_BOX_TOP || texType == SKY_BOX_SIDE || texType == SKY_BOX_BOTTOM;
+}
+
 void Texture::createGLTexture()
 {
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -134,7 +141,7 @@ void Texture::createGLTexture()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, 0);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	if(MIPMAP)
+	if(MIPMAP && !skybox())
 	{
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
@@ -317,6 +324,7 @@ Texture::Texture(GLuint name, TextureType type, unsigned int w, unsigned int h)
 	id = name;
 	width = w;
 	height = h;
+	texType = type;
 	initRandomColors();
 
 	image = (GLubyte *)malloc(width * height * 4);
