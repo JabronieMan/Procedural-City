@@ -1,7 +1,12 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
+#ifdef WIN32
 #include <glut.h>
+#else
+#include <GLUT/glut.h> //Should be Mac OS X standard in Xcode projects.
+#endif
+
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -67,12 +72,13 @@ private:
 
 void Texture::setColor(int row, int col, int width, GLubyte r, GLubyte g, GLubyte b)
 {
-	int offset = row * width * 4 + col * 4;
+	//int offset = row * width * 4 + col * 4;
+	int offset = row * width * 3 + col * 3;
 
 	*(image + offset) = r;
 	*(image + (++offset)) = g;
 	*(image + (++offset)) = b;
-	*(image + (++offset)) = (GLubyte) 255;
+	//*(image + (++offset)) = (GLubyte) 255;
 }
 
 void Texture::setGreyscale(int row, int col, int width, GLubyte color, bool filter)
@@ -159,14 +165,14 @@ void Texture::createGLTexture()
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		}
 		gluBuild2DMipmaps(GL_TEXTURE_2D, 4, width, height,
-						GL_RGBA, GL_UNSIGNED_BYTE, image);
+						GL_RGB, GL_UNSIGNED_BYTE, image);
 	}
 	else
 	{
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, 
-			height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, 
+			height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
 	}
 }
 
@@ -327,7 +333,8 @@ Texture::Texture(GLuint name, TextureType type, unsigned int w, unsigned int h)
 	texType = type;
 	initRandomColors();
 
-	image = (GLubyte *)malloc(width * height * 4);
+	//image = (GLubyte *)malloc(width * height * 4);
+	image = (GLubyte *)malloc(width * height * 3);
 	switch(type)
 	{
 	case WINDOWS:

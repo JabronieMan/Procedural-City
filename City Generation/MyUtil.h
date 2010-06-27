@@ -27,7 +27,11 @@
 // Include the GLUT header, which will include both gl.h and glu.h.
 // You may need to modify this, depending on where this header is located
 // on your machine, and how you have the programming environment configured.
+#ifdef WIN32
 #include <glut.h>
+#else
+#include <GLUT/glut.h> //Should be Mac OS X standard in Xcode projects.
+#endif
 
 // Define some useful "GL look-alike" functions that accept instances of our classes
 // as arguments.

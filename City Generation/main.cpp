@@ -7,8 +7,8 @@
 using namespace std;
 
 // Window Params
-#define DEFAULT_WINDOW_WIDTH 1600
-#define DEFAULT_WINDOW_HEIGHT 900
+#define DEFAULT_WINDOW_WIDTH 1920
+#define DEFAULT_WINDOW_HEIGHT 1080
 
 // Control Constants
 #define MOUSE_SENSITIVITY 0.005
